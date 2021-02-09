@@ -1,4 +1,4 @@
-import {Doughnut} from 'vue-chartjs'
+import { Doughnut } from 'vue-chartjs'
 
 export default {
   extends: Doughnut,
@@ -22,7 +22,7 @@ export default {
           '#eb6886'
         ]
       }]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, { responsive: true, maintainAspectRatio: false })
 
   }
 }

@@ -53,6 +53,10 @@
   }
 }
 
+.flag-align {
+  margin: 0px -16px -16px -16px !important;
+}
+
 .app-header__menu,
 .app-header__mobile-menu {
   display: none;
@@ -63,7 +67,9 @@
 
 // Modifiers
 
+@import "modifiers/header-dots";
 @import "modifiers/header-userarea";
+@import "modifiers/header-megamenu";
 
 // Header Themes
 

@@ -1,4 +1,4 @@
-import {Bar} from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 
 export default {
   extends: Bar,
@@ -17,7 +17,7 @@ export default {
           data: [65, 59, 80, 81, 56, 55, 40]
         }
       ]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, { responsive: true, maintainAspectRatio: false })
 
   }
 }

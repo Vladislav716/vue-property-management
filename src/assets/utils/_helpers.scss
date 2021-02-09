@@ -269,3 +269,205 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/*Width*/
+$num: 25;
+@while $num < 801 {
+  .w-#{$num}p {
+    width: $num +0px !important;
+  }
+  $num: $num +5;
+}
+
+@media (min-width: 576px) {
+  $num: 25;
+  @while $num < 801 {
+    .w-sm-#{$num}p {
+      width: $num +0px !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 768px) {
+  $num: 25;
+  @while $num < 801 {
+    .w-md-#{$num}p {
+      width: $num +0px !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 992px) {
+  $num: 25;
+  @while $num < 801 {
+    .w-lg-#{$num}p {
+      width: $num +0px !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 1200px) {
+  $num: 25;
+  @while $num < 801 {
+    .w-xl-#{$num}p {
+      width: $num +0px !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 1400px) {
+  $num: 25;
+  @while $num < 801 {
+    .w-xxl-#{$num}p {
+      width: $num +0px !important;
+    }
+    $num: $num +5;
+  }
+}
+
+$num: 5;
+@while $num < 101 {
+  .w-#{$num} {
+    width: $num +0% !important;
+  }
+  $num: $num +5;
+}
+
+@media (min-width: 576px) {
+  $num: 5;
+  @while $num < 101 {
+    .w-sm-#{$num} {
+      width: $num +0% !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 768px) {
+  $num: 5;
+  @while $num < 101 {
+    .w-md-#{$num} {
+      width: $num +0% !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 992px) {
+  $num: 5;
+  @while $num < 101 {
+    .w-lg-#{$num} {
+      width: $num +0% !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 1200px) {
+  $num: 5;
+  @while $num < 101 {
+    .w-xl-#{$num} {
+      width: $num +0% !important;
+    }
+    $num: $num +5;
+  }
+}
+
+@media (min-width: 1400px) {
+  $num: 5;
+  @while $num < 101 {
+    .w-xxl-#{$num} {
+      width: $num +0% !important;
+    }
+    $num: $num +5;
+  }
+}
+
+/*Max Width*/
+$num: 25;
+@while $num < 801 {
+  .mw-#{$num}p {
+    max-width: $num +0px !important;
+  }
+  $num: $num +25;
+}
+
+/*Min Width*/
+.mnw-0 {
+  min-width: 0 !important;
+}
+
+$num: 25;
+@while $num < 801 {
+  .mnw-#{$num}p {
+    min-width: $num +0px !important;
+  }
+  $num: $num +25;
+}
+
+/*Height*/
+$num: 25;
+@while $num < 801 {
+  .h-#{$num}p {
+    height: $num +0px !important;
+  }
+  $num: $num +5;
+}
+
+$num: 25;
+@while $num < 101 {
+  .h-#{$num} {
+    height: $num +0% !important;
+  }
+  $num: $num +5;
+}
+
+/*Max Height*/
+$num: 100;
+@while $num < 801 {
+  .mh-#{$num}p {
+    max-height: $num +0px !important;
+  }
+  $num: $num +25;
+}
+
+/*Min Height*/
+$num: 100;
+@while $num < 801 {
+  .mnh-#{$num}p {
+    min-height: $num +0px !important;
+  }
+  $num: $num +25;
+}
+
+/*Div Sizes*/
+$num: 8;
+@while $num < 51 {
+  .d-#{$num} {
+    height: $num +0px !important;
+    width: $num +0px !important;
+  }
+  $num: $num +2;
+}
+
+$num: 54;
+@while $num < 99 {
+  .d-#{$num} {
+    height: $num +0px !important;
+    width: $num +0px !important;
+  }
+  $num: $num + 4;
+}
+
+$num: 100;
+@while $num < 151 {
+  .d-#{$num} {
+    height: $num +0px !important;
+    width: $num +0px !important;
+  }
+  $num: $num + 10;
+}

@@ -1,4 +1,4 @@
-import {Radar} from 'vue-chartjs'
+import { Radar } from 'vue-chartjs'
 
 export default {
   extends: Radar,
@@ -27,7 +27,7 @@ export default {
           data: [28, 48, 40, 19, 96, 27, 100]
         }
       ]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, { responsive: true, maintainAspectRatio: false })
 
   }
 }

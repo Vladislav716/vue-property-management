@@ -1,4 +1,3 @@
-
 // BOOTSTRAP 4 VARIABLES
 
 @import "components/bootstrap4/functions";
@@ -61,38 +60,72 @@
 
 @import "elements/buttons";
 @import "elements/dropdown";
+@import "elements/navs";
 @import "elements/badges";
+@import "elements/cards";
+@import "elements/tabs";
 @import "elements/accordions";
 @import "elements/modals";
+@import "elements/progressbar";
 @import "elements/timeline";
+@import "elements/listgroup";
+@import "elements/forms";
+@import "elements/pagination";
+@import "elements/chat";
 @import "elements/popovers-tooltips";
 
 // DASHBOARD BOXES
 
 @import "widgets/chart-boxes/chart-boxes";
 @import "widgets/content-boxes/content-boxes";
-
+@import "widgets/profile-boxes/profile-boxes";
 // PAGES
 @import "pages/userpages";
-
+// Applications
+@import "applications/applications-base";
 // COMPONENTS
-
 // Perfect Scrollbar
-
 @import "components/perfect-scrollbar/perfect-scrollbar";
-
+// Image Crop
+@import "components/image-crop/image-crop";
+// Wizard
+@import "components/wizard/wizard";
+// Guided Tours
+@import "components/guided-tours/guided-tours";
+// Loading buttons
+@import "components/loading-buttons/loading-buttons";
+// Drawer
+@import "components/drawer/drawer";
 // Hamburger button
-
 @import "components/hamburgers/hamburgers";
-
+// Notifications
+@import "components/notifications/sweetalerts";
+@import "components/notifications/toastr";
+// Calendar
+@import "components/calendar/calendar";
+// Maps
+@import "components/maps/vector-maps";
+// Slick Slider
+@import "components/slick-carousel/slick/slick";
+// Tree View
+@import "components/tree-view/tree-view";
+// Tables
+@import "components/tables/tables";
 // Icons
-
 @import "components/icons/p7icons";
+@import "components/icons/linearicons";
+// FORMS
+@import "components/forms/input-select/input-select";
 
 // Responsive
-
 @import "layout/responsive/responsive-base";
-
 // DEMO
-
 @import "demo-ui/demo";
+
+// Vuetify
+
+@import "utils/vuetify";
+
+//custom
+
+@import "custom";

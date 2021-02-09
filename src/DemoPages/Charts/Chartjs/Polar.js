@@ -1,4 +1,4 @@
-import {PolarArea} from 'vue-chartjs'
+import { PolarArea } from 'vue-chartjs'
 
 export default {
   extends: PolarArea,
@@ -28,7 +28,7 @@ export default {
         'Grey',
         'Blue'
       ]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, { responsive: true, maintainAspectRatio: false })
 
   }
 }

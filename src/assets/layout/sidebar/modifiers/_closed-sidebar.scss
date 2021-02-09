@@ -8,7 +8,7 @@
     z-index: 13;
 
     .app-header__logo {
-      width: auto;
+      width: 100%;
     }
 
     .logo-src {
@@ -88,10 +88,6 @@
 
       .header__pane {
         display: block;
-      }
-
-      .app-header__logo {
-        width: 100%;
       }
 
       .v-sidebar-menu {

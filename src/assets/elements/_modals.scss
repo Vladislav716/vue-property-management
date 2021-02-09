@@ -12,4 +12,12 @@
 .modal-dialog {
   box-shadow: $box-shadow-lg-default;
   @include border-radius($border-radius);
+
+  &.modal-dialog-centered {
+    box-shadow: none;
+
+    .modal-content {
+      box-shadow: $box-shadow-lg-default;
+    }
+  }
 }

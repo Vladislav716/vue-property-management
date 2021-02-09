@@ -1,4 +1,4 @@
-import {HorizontalBar} from 'vue-chartjs'
+import { HorizontalBar } from 'vue-chartjs'
 
 export default {
   extends: HorizontalBar,
@@ -17,7 +17,7 @@ export default {
           data: [65, 59, 80, 81, 56, 55, 40]
         }
       ]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, { responsive: true, maintainAspectRatio: false })
 
   }
 }
