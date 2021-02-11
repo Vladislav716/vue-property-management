@@ -24,121 +24,21 @@
             </ul>
           </div>
           <ul class="nav flex-column">
-            <li class="nav-item">
-              <button type="button" tabindex="0" class="dropdown-item">
+            <li class="nav-item" v-for="chatContact in chatContacts" :key="chatContact.index" @click="contactClick(chatContact.index)">
+              <button type="button" :tabindex="chatContact.index" class="dropdown-item">
                 <div class="widget-content p-0">
                   <div class="widget-content-wrapper">
                     <div class="widget-content-left mr-3">
                       <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
+                        <div v-if="chatContact.state === 'online'" class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
+                        <div v-if="chatContact.state === 'offline'" class="badge badge-bottom badge-secondary badge-dot badge-dot-lg"></div>
                         <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
+                          <b-img :src="getImgUrl(chatContact.name.avatar, 'avatar')" alt=""></b-img>
                         </div>
                       </div>
                     </div>
                     <div class="widget-content-left">
-                      <div class="widget-heading">Alina Mcloughlin</div>
-                      <div class="widget-subheading">Aenean vulputate eleifend tellus.</div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" tabindex="1" class="dropdown-item active">
-                <div class="widget-content p-0">
-                  <div class="widget-content-wrapper">
-                    <div class="widget-content-left mr-3">
-                      <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/3.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="widget-content-left">
-                      <div class="widget-heading">Chad Evans</div>
-                      <div class="widget-subheading">Vivamus elementum semper nisi.</div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" tabindex="0" class="dropdown-item">
-                <div class="widget-content p-0">
-                  <div class="widget-content-wrapper">
-                    <div class="widget-content-left mr-3">
-                      <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/3.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="widget-content-left">
-                      <div class="widget-heading">Ella-Rose Henry</div>
-                      <div class="widget-subheading">Etiam sit amet orci eget eros faucibus</div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" tabindex="0" class="dropdown-item">
-                <div class="widget-content p-0">
-                  <div class="widget-content-wrapper">
-                    <div class="widget-content-left mr-3">
-                      <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="widget-content-left">
-                      <div class="widget-heading">Ruben Tillman</div>
-                      <div class="widget-subheading">Lorem ipsum dolor sit amet, consectetuer</div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" tabindex="0" class="dropdown-item">
-                <div class="widget-content p-0">
-                  <div class="widget-content-wrapper">
-                    <div class="widget-content-left mr-3">
-                      <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/3.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="widget-content-left">
-                      <div class="widget-heading">Ella-Rose Henry</div>
-                      <div class="widget-subheading">Etiam sit amet orci eget eros faucibus</div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" tabindex="0" class="dropdown-item">
-                <div class="widget-content p-0">
-                  <div class="widget-content-wrapper">
-                    <div class="widget-content-left mr-3">
-                      <div class="avatar-icon-wrapper">
-                        <div class="badge badge-bottom badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="widget-content-left">
-                      <div class="widget-heading">Ruben Tillman</div>
-                      <div class="widget-subheading">Lorem ipsum dolor sit amet, consectetuer</div>
+                      <div class="widget-heading">{{chatContact.name.first}} {{chatContact.name.last}}</div>
                     </div>
                   </div>
                 </div>
@@ -146,11 +46,11 @@
             </li>
           </ul>
         </div>
-        <div>
+        <div class="w-100">
           <div class="app-inner-layout__content height-fit-content mb-2">
             <div class="table-responsive card w-50 mr-2 height-fit-content">
               <div class="app-inner-layout__top-pane border-bottom h-65p badge-info">
-                <div class="pane-left">
+                <div class="pane-left" v-if="selectedContact[0]">
                   <div class="mobile-app-menu-btn">
                     <button type="button" class="hamburger hamburger--elastic"
                       v-bind:class="{ 'is-active' : isMobileOpen }" @click="toggleLayoutClass('open-mobile-menu')">
@@ -160,13 +60,14 @@
                     </button>
                   </div>
                   <div class="avatar-icon-wrapper mr-2">
-                    <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
+                    <div v-if="selectedContact[0].state === 'online'" class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
+                    <div v-if="selectedContact[0].state === 'offline'" class="badge badge-bottom btn-shine badge-secondary badge-dot badge-dot-lg"></div>
                     <div class="avatar-icon avatar-icon-xl rounded">
-                      <img width="82" src="@/assets/images/avatars/1.jpg" alt />
+                      <b-img width="82" :src="getImgUrl(selectedContact[0].name.avatar, 'avatar')" alt ></b-img>
                     </div>
                   </div>
                   <h4 class="mb-0 text-nowrap">
-                    Chad Evans
+                    {{selectedContact[0].name.first}} {{selectedContact[0].name.last}}
                     <div class="opacity-7">
                       Last Seen Online:
                       <span class="opacity-8">10 minutes ago</span>
@@ -174,130 +75,42 @@
                   </h4>
                 </div>
               </div>
-              <VuePerfectScrollbar class="app-sidebar-scroll h-300p" v-once>
-                <div class="chat-wrapper">
-                  <div class="chat-box-wrapper">
+              <VuePerfectScrollbar class="app-sidebar-scroll h-300p">
+                <div class="chat-wrapper" v-for="chatContent in selectedContact[0].chatContents" :key="chatContent.index">
+                  <div v-if="chatContent.state === 'receive'" class="chat-box-wrapper">
                     <div>
                       <div class="avatar-icon-wrapper mr-2">
-                        <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
                         <div class="avatar-icon avatar-icon-lg rounded">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
+                          <b-img :src="getImgUrl(selectedContact[0].name.avatar, 'avatar')" alt ></b-img>
                         </div>
                       </div>
                     </div>
                     <div>
                       <div class="chat-box">
-                        But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system.
+                        {{chatContent.content}}
                       </div>
                       <small class="opacity-6">
-                        <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
+                        <font-awesome-icon icon="calendar-alt" />{{chatContent.time}}
                       </small>
                     </div>
                   </div>
-                  <div class="float-right">
+                  <div v-if="chatContent.state === 'send'" class="float-right">
                     <div class="chat-box-wrapper chat-box-wrapper-right">
                       <div>
                         <div class="chat-box">
-                          Expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.
+                          {{chatContent.content}}
                         </div>
                         <small class="opacity-6">
-                          <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
+                          <font-awesome-icon icon="calendar-alt" />{{chatContent.time}}
                         </small>
                       </div>
                       <div>
                         <div class="avatar-icon-wrapper ml-1">
-                          <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
                           <div class="avatar-icon avatar-icon-lg rounded">
-                            <img src="@/assets/images/avatars/2.jpg" alt />
+                            Me
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div class="chat-box-wrapper">
-                    <div>
-                      <div class="avatar-icon-wrapper mr-2">
-                        <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon avatar-icon-lg rounded">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        class="chat-box"
-                      >But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system.</div>
-                      <small class="opacity-6">
-                        <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
-                      </small>
-                    </div>
-                  </div>
-                  <div class="float-right">
-                    <div class="chat-box-wrapper chat-box-wrapper-right">
-                      <div>
-                        <div class="chat-box">Denouncing pleasure and praising pain was born and I will give you a complete account.</div>
-                        <small class="opacity-6">
-                          <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
-                        </small>
-                      </div>
-                      <div>
-                        <div class="avatar-icon-wrapper ml-1">
-                          <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
-                          <div class="avatar-icon avatar-icon-lg rounded">
-                            <img src="@/assets/images/avatars/3.jpg" alt />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="chat-box-wrapper">
-                    <div>
-                      <div class="avatar-icon-wrapper mr-2">
-                        <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon avatar-icon-lg rounded">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="chat-box">Born and I will give you a complete account of the system.</div>
-                      <small class="opacity-6">
-                        <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
-                      </small>
-                    </div>
-                  </div>
-                  <div class="float-right">
-                    <div class="chat-box-wrapper chat-box-wrapper-right">
-                      <div>
-                        <div class="chat-box">The master-builder of human happiness.</div>
-                        <small class="opacity-6">
-                          <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
-                        </small>
-                      </div>
-                      <div>
-                        <div class="avatar-icon-wrapper ml-1">
-                          <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
-                          <div class="avatar-icon avatar-icon-lg rounded">
-                            <img src="@/assets/images/avatars/3.jpg" alt />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="chat-box-wrapper">
-                    <div>
-                      <div class="avatar-icon-wrapper mr-2">
-                        <div class="badge badge-bottom btn-shine badge-success badge-dot badge-dot-lg"></div>
-                        <div class="avatar-icon avatar-icon-lg rounded">
-                          <img src="@/assets/images/avatars/2.jpg" alt />
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="chat-box">Mistaken idea of denouncing pleasure and praising pain was born and I will give you</div>
-                      <small class="opacity-6">
-                        <font-awesome-icon icon="calendar-alt" />11:01 AM | Yesterday
-                      </small>
                     </div>
                   </div>
                 </div>
@@ -316,7 +129,7 @@
               </div>
               <VuePerfectScrollbar class="app-sidebar-scroll h-300p" >
                 <div class="p-2">
-                  <b-table striped hover :items="transactionItems" :fields="transactionFields"></b-table>
+                  <b-table striped hover :items="selectedContact[0].transactions" :fields="transactionFields"></b-table>
                 </div>
               </VuePerfectScrollbar>
               <div class="app-inner-layout__bottom-pane d-block text-center">
@@ -336,24 +149,24 @@
               <VuePerfectScrollbar class="app-sidebar-scroll h-300p" >
                 <div class="widget-content-left">
                   <div class="text-center">
-                    <img src="@/assets/images/avatars/2.jpg" class="rounded-circle w-70p" alt />
-                    <h4>Anthon Ivanovich</h4>
-                    <h6>Short Description</h6>
+                    <b-img :src="getImgUrl(selectedContact[0].name.avatar, 'avatar')" class="rounded-circle w-70p" alt ></b-img>
+                    <h4>{{selectedContact[0].name.first}} {{selectedContact[0].name.last}}</h4>
+                    <h6>{{selectedContact[0].profile.description}}</h6>
                   </div>
                   <b-row class="m-0 w-100">
                     <b-col md="4 text-right">
                       <h6>Current Property : </h6>
                     </b-col>
                     <b-col md="8">
-                      <a href="#"><h6>Property1</h6></a>
+                      <a href="#"><h6>{{selectedContact[0].profile.currentProperty}}</h6></a>
                     </b-col>
                     <b-col md="4 text-right">
-                      <h6>driver's license : </h6>
+                      <h6>driver's license : {{selectedContact[0].profile.license.no}}</h6>
                     </b-col>
                     <b-col md="8">
                       <div class="w-150p">
                         <expandable-image
-                          :src="require('@/assets/images/dropdown-header/abstract1.jpg')"
+                          :src="getImgUrl(selectedContact[0].profile.license.image, 'license')"
                         />
                       </div>
                     </b-col>
@@ -366,9 +179,40 @@
                 <h4>Task List</h4>
               </div>
               <VuePerfectScrollbar class="app-sidebar-scroll h-300p" >
-                <div class="p-2">
-                  <b-table striped hover :items="transactionItems" :fields="transactionFields"></b-table>
-                </div>
+                <ul class="todo-list-wrapper list-group list-group-flush">
+                  <li class="list-group-item" v-for="task in selectedContact[0].tasks" :key="task.index">
+                    <div class="todo-indicator bg-warning"></div>
+                    <div class="widget-content p-0">
+                      <div class="widget-content-wrapper">
+                        <div class="widget-content-left mr-2">
+                          <div class="custom-checkbox custom-control">
+                            <input type="checkbox" id="exampleCustomCheckbox12" class="custom-control-input" />
+                            <label class="custom-control-label" for="exampleCustomCheckbox12">&nbsp;</label>
+                          </div>
+                        </div>
+                        <div class="widget-content-left">
+                          <div class="widget-heading">
+                            {{task.taskName}}
+                            <div v-if="task.status == 0" class="badge badge-info ml-2">new</div>
+                            <div v-if="task.status == 1" class="badge badge-success ml-2">completed</div>
+                            <div v-if="task.status == 2" class="badge badge-danger ml-2">rejected</div>
+                          </div>
+                          <div class="widget-subheading">
+                            <i>{{task.description}}</i>
+                          </div>
+                        </div>
+                        <div class="widget-content-right widget-content-actions">
+                          <button class="border-0 btn-transition btn btn-outline-success">
+                            <font-awesome-icon icon="check" />
+                          </button>
+                          <button class="border-0 btn-transition btn btn-outline-danger">
+                            <font-awesome-icon icon="trash-alt" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </VuePerfectScrollbar>
             </div>
           </div>
@@ -382,7 +226,7 @@
                   </div>
                   <div class="widget-content-right">
                     <div class="widget-numbers text-white">
-                      <span>$ 33600</span>
+                      <span>$ {{selectedContact[0].currentBalance}}</span>
                     </div>
                   </div>
                 </div>
@@ -399,7 +243,11 @@
               </div>
               <VuePerfectScrollbar class="app-sidebar-scroll h-300p" >
                 <div class="p-2">
-                  <b-table striped hover :items="transactionItems" :fields="transactionFields"></b-table>
+                  <b-table striped hover :items="selectedContact[0].serviceRequests" :fields="requestFields">
+                    <template #cell(assigned)="row">
+                      <span :class="row.value ? 'assigned': 'unassigned'">{{row.value ? 'Assigned': 'Unassigned'}}</span>
+                    </template>
+                  </b-table>
                 </div>
               </VuePerfectScrollbar>
             </div>
@@ -443,61 +291,729 @@ export default {
         subheading: "Can view Tenants list and their profile, balance, latest transactions, chat box...",
         icon: "pe-7s-note2 icon-gradient bg-mixed-hopes",
         isMobileOpen: false,
-        transactionFields: ['first_name', 'last_name', 'age'],
-        transactionItems: [
-          { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-          { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-          { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-          { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' }
-        ]
+        transactionFields: ['propertyName', 'income', 'expenses'],
+        requestFields: ['property', 'cost', 'assigned'],
+        chatContacts: [
+          {
+            index: 0,
+            name: {first: 'Alina', last: 'Moloco', avatar: '1'},
+            state: 'online',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+            transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+          {
+            index: 1,
+            name: {first: 'Choba', last: 'Kenbin', avatar: '6'},
+            state: 'online',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+             transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+          {
+            index: 2,
+            name: {first: 'Alexy', last: 'Ivanonich', avatar: '2'},
+            state: 'offline',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+             transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+          {
+            index: 3,
+            name: {first: 'Ubensko', last: 'Dalicov', avatar: '3'},
+            state: 'online',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!!!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+             transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+          {
+            index: 4,
+            name: {first: 'Mary', last: 'Anna', avatar: '4'},
+            state: 'online',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+             transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+          {
+            index: 5,
+            name: {first: 'Steven', last: 'Beliove', avatar: '5'},
+            state: 'offline',
+            chatContents: [
+              {
+                index: 0,
+                state: 'send',
+                content: 'Hello!',
+                time: '11:01 AM | Yesterday'
+              },
+              {
+                index: 1,
+                state: 'receive',
+                content: 'Hello! How are you?',
+                time: '11:02 AM | Yesterday'
+              },
+              {
+                index: 2,
+                state: 'send',
+                content: 'I have moved to new house in Los Angels',
+                time: '11:03 AM | Yesterday'
+              },
+              {
+                index: 3,
+                state: 'receive',
+                content: 'Wow! Really? I hope to visit your new house...',
+                time: '11:04 AM | Yesterday'
+              }
+            ],
+             transactions: [
+              {
+                propertyName: 'Property1',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property2',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property3',
+                income: '562410',
+                expenses: '225620'
+              },
+              {
+                propertyName: 'Property4',
+                income: '562410',
+                expenses: '225620'
+              },
+            ],
+            profile: {
+              description: 'Short Description about me',
+              license: {no: '226320', image: 'abstract1'},
+              currentProperty: 'Property1'
+            },
+            tasks:[
+              { 
+                index: 1,
+                taskName: 'task1',
+                description: 'description for task1',
+                status: 0
+              },
+              { 
+                index: 2,
+                taskName: 'task2',
+                description: 'description for task2',
+                status: 1
+              },
+              {
+                index: 3,
+                taskName: 'task3',
+                description: 'description for task3',
+                status: 2
+              },
+            ],
+            currentBalance: '336000',
+            serviceRequests: [
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-10'
+              },
+              {
+                property: 'Property1',
+                cost: '35000',
+                assigned: true,
+                date: '2020-12-26'
+              },
+              {
+                property: 'Property1',
+                cost: '2200',
+                assigned: true,
+                date: '2021-02-02'
+              },
+              {
+                property: 'Property1',
+                cost: '12300',
+                assigned: true,
+                date: '2021-10-11'
+              },
+              {
+                property: 'Property1',
+                cost: '223600',
+                assigned: true,
+                date: '2021-01-01'
+              },
+            ]
+          },
+        ],
+        selectedContact: {},
       
     }),
 
-    computed: {
-        sortOptions() {
-            // Create an options list from our fields
-            return this.fields
-                .filter(f => f.sortable)
-                .map(f => {
-                    return { text: f.label, value: f.key };
-                });
-        }
-    },
     methods: {
       toggleLayoutClass(className) {
-      const el = document.body;
-      this.isMobileOpen = !this.isMobileOpen;
+        const el = document.body;
+        this.isMobileOpen = !this.isMobileOpen;
 
-      if (this.isMobileOpen) {
-        el.classList.add(className);
-      } else {
-        el.classList.remove(className);
-      }
-    },
+        if (this.isMobileOpen) {
+          el.classList.add(className);
+        } else {
+          el.classList.remove(className);
+        }
+      },
        
-        getImgUrl(pet) {
-            var images = require.context(
-                "@/assets/images/avatars/",
-                false,
-                /\.jpg$/
-            );
-            return images("./" + pet + ".jpg");
-        },
+      getImgUrl(pet, type) {
+        var images;
+        if(type === 'avatar') {
+          images = require.context('@/assets/images/avatars/', false, /\.jpg$/)
+          return images('./' + pet + ".jpg");
+        } else if(type === 'license') {
+          images = require.context('@/assets/images/dropdown-header/', false, /\.jpg$/)
+          return images('./' + pet + ".jpg")
+        }
+      },
+
+      contactClick(ind) {
+        console.log(ind)
+        this.selectedContact = this.chatContacts.filter((val, index) => index === ind)
+        console.log(this.selectedContact)
+      }
       
-    }
+    },
+    beforeMount(){
+      this.selectedContact = this.chatContacts.filter((val, index) => index === 0)
+    },
 };
 </script>
 
 <style scoped>
-
-.vertical-middle {
-    vertical-align: middle;
+.assigned {
+  padding: 3px 6px;
+  border-radius: 11px;
+  background: #33c68b;
+  color: white;
 }
 
-.truncate {
-    width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.unassigned{
+  padding: 3px 6px;
+  border-radius: 11px;
+  background: #365b48;
+  color: white;
 }
 </style>
+

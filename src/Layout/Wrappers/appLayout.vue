@@ -23,7 +23,7 @@
     <b-modal id="modalsm" size="sm" title="Small Modal">Hello Modal!</b-modal>
 
     <div class="ui-theme-settings">
-      <button type="button" class="btn-open-options btn btn-warning"
+      <button type="button" class="btn-open-options btn btn-info"
         v-bind:class="{ 'is-active' : isConfigOpen }" @click="toggleConfig('settings-open')">
         <font-awesome-icon icon="cog" size="2x" spin />
       </button>

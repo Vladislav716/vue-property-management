@@ -63,12 +63,12 @@ export default {
         },
         {
             title: 'Service Provider List',
-            icon: 'pe-7s-id',
+            icon: 'pe-7s-coffee',
             href: '/service-provider',
         },
         {
             title: 'Applicant Funnel List',
-            icon: 'pe-7s-id',
+            icon: 'pe-7s-news-paper',
             href: '/applicant-funnel',
         },
         {
