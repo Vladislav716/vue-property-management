@@ -79,6 +79,16 @@
         </b-row>
       </div>
     </transition>
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      variant="danger"
+      @dismissed="dismissCountDown=0"
+      @dismiss-count-down="countDownChanged"
+      class="error-alert"
+    >
+    {{errorValue}}
+    </b-alert>
   </div>
 </template>
 
@@ -106,7 +116,10 @@ export default {
     slide: 0,
     sliding: null,
     email: '',
-    password: ''
+    password: '',
+    dismissSecs: 10,
+    dismissCountDown: 0,
+    errorValue: ''
   }),
 
   methods: {
@@ -126,7 +139,9 @@ export default {
         this.$refs.slick.reSlick();
       });
     },
-
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
     onSlideStart() {
       this.sliding = true;
     },
@@ -134,8 +149,10 @@ export default {
       this.sliding = false;
     },
     Login(){
-      console.log(this.email, this.password)
-      if(this.email == 'landlord@email.com' && this.password == 'landlord') {
+      if(!this.email && !this.password){
+        this.errorValue = "Input your Email and Password!"
+        this.dismissCountDown = this.dismissSecs
+      }else if(this.email == 'landlord@email.com' && this.password == 'landlord') {
         this.$store.state.admin = 'landlord';
         this.$store.state.authenticated = true;
         this.$router.push({ name: 'dashabord' })
@@ -143,8 +160,24 @@ export default {
         this.$store.state.admin = 'tenant';
         this.$store.state.authenticated = true;
         this.$router.push({ name: 'dashabord' })
+      } else {
+        this.errorValue = "Email or Password Error!"
+        this.dismissCountDown = this.dismissSecs
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.error-alert {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #de5228;
+    color: white;
+    border-color: #d8ac2f;
+    padding: 20px 30px;
+    width: 300px;
+}
+</style>

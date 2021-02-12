@@ -18,7 +18,7 @@
         <alert2></alert2>
       </demo-card>
     </layout-wrapper>
-  </div>
+  </div>  
 </template>
 
 <script>

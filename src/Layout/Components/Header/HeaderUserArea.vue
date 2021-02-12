@@ -4,12 +4,12 @@
       <div class="widget-content p-0">
         <div class="widget-content-wrapper">
           <div class="widget-content-left">
-            <b-dropdown toggle-class="p-0 mr-2" menu-class="dropdown-menu-lg" variant="link" no-caret right>
-              <span slot="button-content">
-                <div class="icon-wrapper icon-wrapper-alt rounded-circle">
-                  <img width="42" class="rounded-circle" src="@/assets/images/avatars/1.jpg" alt />
-                </div>
-              </span>
+            <span slot="button-content mt-auto">
+              <div class="icon-wrapper icon-wrapper-alt rounded-circle">
+                <img width="42" class="rounded-circle" src="@/assets/images/avatars/1.jpg" alt />
+              </div>
+            </span>
+            <!-- <b-dropdown toggle-class="p-0 mr-2" menu-class="dropdown-menu-lg" variant="link" no-caret right>
               <div class="dropdown-menu-header">
                 <div class="dropdown-menu-header-inner bg-info">
                   <div class="menu-header-image opacity-2 dd-header-bg-6"></div>
@@ -87,29 +87,31 @@
                   <button class="btn-wide btn btn-primary btn-sm">Open Messages</button>
                 </li>
               </ul>
-            </b-dropdown>
+            </b-dropdown> -->
           </div>
           <div class="widget-content-left ml-3 header-user-info">
             <div class="widget-heading">Alina Mclourd</div>
             <div class="widget-subheading">VP People Manager</div>
           </div>
-          <div class="widget-content-right header-user-info ml-3">
+           <b-button variant="danger" class="ml-3" @click="logout"><i class="pe-7s-next-2"></i> Logout</b-button>
+
+          <!-- <div class="widget-content-right header-user-info ml-3">
             <b-btn v-b-tooltip.hover title="Tooltip Example"
               class="btn-shadow p-1" size="sm" variant="info">
               <font-awesome-icon icon="calendar-alt" class="mr-1 ml-1" />
             </b-btn>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
-    <div class="header-btn-lg">
+    <!-- <div class="header-btn-lg">
       <button type="button" class="hamburger hamburger--elastic"
         v-bind:class="{ 'is-active': showDrawerSection }" v-on:click="showDrawerSection = !showDrawerSection">
         <span class="hamburger-box">
           <span class="hamburger-inner"></span>
         </span>
       </button>
-    </div>
+    </div> -->
 
     <div class="app-drawer-wrapper" v-bind:class="{ 'drawer-open': showDrawerSection }">
       <div class="drawer-nav-btn">
@@ -595,6 +597,12 @@ export default {
     showDrawerSection: false
   }),
 
-  methods: {}
+  methods: {
+    logout() {
+       this.$store.state.admin = '';
+      this.$store.state.authenticated = false;
+      this.$router.push({ name: 'login' })
+    }
+  }
 };
 </script>
