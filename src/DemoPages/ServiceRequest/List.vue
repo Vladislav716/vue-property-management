@@ -3,9 +3,6 @@
     <page-title :heading="heading" :subheading="subheading" :icon="icon"></page-title>
     <b-card class="main-card mb-4">
       <b-row>
-        <b-col md="12">
-          <b-button variant="success" v-b-modal.addModal class="pull-right"><font-awesome-icon class="mr-2" icon="plus" />Add Request</b-button>
-        </b-col>
         <b-col md="10" class="my-1">
           <div>
             <legend tabindex="-1" class="bv-no-focus-ring col-form-label pt-0">Filter</legend>
@@ -64,6 +61,14 @@
           <p class="mb-0">{{row.value.date}}</p>
           <p class="mb-0 truncate  ">{{row.value.notes}}</p>
         </template>
+        <template #cell(index)="row">
+           <button class="border-0 btn-transition btn btn-outline-success" @click="edit(row.value)">
+              <i class="pe-7s-tools fsize-4"></i>
+            </button>
+            <button class="border-0 btn-transition btn btn-outline-danger" @click="del(row.value)">
+              <i class="pe-7s-trash fsize-4"></i>
+            </button>
+        </template>
       </b-table>
       <b-row>
         <b-col md="6" class="my-1">
@@ -71,17 +76,14 @@
         </b-col>
       </b-row>
     </b-card>
-    <b-modal id="viewModal">
-      Hello {{selectedRow}} 
-    </b-modal>
-    <b-modal size="lg" ref="addModal" id="addModal" hide-footer title="Add Request" >
+     <b-modal size="lg" ref="editModal" id="editModal" hide-footer title="Edit Request" v-if="selectedRow[0]">
       <b-row>
         <b-col md="4" class="text-right">
           <p>Service Provider/Employee :</p>
         </b-col>
         <b-col md="4">
           <b-form-radio-group
-              v-model="addAssigned"
+              v-model="selectedRow[0].assigned"
               :options="addOptions"
               class="mb-3"
               value-field="item"
@@ -95,7 +97,7 @@
           Property :
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="property" placeholder="Enter the property"></b-form-input>
+          <b-form-input v-model="selectedRow[0].property" placeholder="Enter the property"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -103,10 +105,10 @@
           Request Created By :
         </b-col>
         <b-col md="8">
-          <b-form-input list="my-list-id" v-model="requester"></b-form-input>
-          <datalist id="my-list-id">
-            <option v-for="requester in requesters" :key="requester.value" >{{ requester.label }}</option>
-          </datalist>
+          <b-button @click="$refs.licenseInput.click()" class="btn-right mr-3">Select an image</b-button>
+          <b-img v-if="imageUrl" :src="imageUrl" class="w-100p"></b-img>
+          <input style="display: none" ref="licenseInput" type="file" @change="imageSelected" enctype="multipart/form-data">
+          <b-form-input list="my-list-id" v-model="selectedRow[0].createdBy.name"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -114,7 +116,7 @@
           Cost :
         </b-col>
         <b-col md="8">
-          <b-form-input type="number" v-model="cost"></b-form-input>
+          <b-form-input type="number" v-model="selectedRow[0].cost"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -126,14 +128,14 @@
           <b-input-group class="mb-3">
             <b-form-input
               id="example-input"
-              v-model="date"
+              v-model="selectedRow[0].schedule.date"
               type="text"
               placeholder="YYYY-MM-DD"
               autocomplete="off"
             ></b-form-input>
             <b-input-group-append>
               <b-form-datepicker
-                v-model="date"
+                v-model="selectedRow[0].schedule.date"
                 button-only
                 right
                 locale="en-US"
@@ -142,16 +144,16 @@
             </b-input-group-append>
           </b-input-group>
           <label>Subject</label>
-          <b-form-input v-model="subject"></b-form-input>
+          <b-form-input v-model="selectedRow[0].schedule.subject"></b-form-input>
           <label>notes</label>
           <b-form-textarea
-            v-model="notes"
+            v-model="selectedRow[0].schedule.notes"
           ></b-form-textarea>
         </b-col>
       </b-row>
       <b-row class="pull-right p-4">
-        <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button>
-        <b-button class="w-100p" variant="success"  @click="AddProperty">Ok</b-button>
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="EditRequest">Ok</b-button>
       </b-row>
     </b-modal>
   </div>
@@ -159,29 +161,27 @@
 
 <script>
 import PageTitle from "@/Layout/Components/PageTitle.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const items = [
-  { assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 0, assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 1,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 2,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 3,  assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 4,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 5,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 6,  assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 7,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 8,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
 ];
 
 export default {
   components: {
     PageTitle,
-    "font-awesome-icon": FontAwesomeIcon,
   },
   data: () => ({
-    heading: "Service Requests",
+    heading: "Service Requests Lists",
     subheading:
-      "View and Add specific service requests.",
+      "View specific service requests.",
     icon: "pe-7s-notebook icon-gradient bg-mixed-hopes",
   
     items: items,
@@ -197,6 +197,7 @@ export default {
       { key: "createdBy", label: "Rquest Creted by", sortable: true, class: "align-middle text-center" },
       { key: "cost", label: "Cost", sortable: true, class: "align-middle text-center" },
       { key: "schedule", label: "Schedule", sortable: true, class: "align-middle" },
+      { key: "index", label: "Actions", class: "align-middle text-center"}
     ],
     selectedRow: [],
     currentPage: 1,
@@ -219,32 +220,19 @@ export default {
       { item: false, name: 'Unassigned' },
     ],
     property: '',
-    requesters: [{label: 'Michel Madrid', value: '1'},
-     {label: 'Ommiton Gason', value: '2'},
-     {label: 'Dolphi Ruchel', value: '3'},
-     {label: 'Json Alpil', value: '4'}],
     cost: '',
     date: '',
     notes: '',
     subject: '',
-    requester: ''
+    imageUrl: null,
   }),
 
-  computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter(f => f.sortable)
-        .map(f => {
-          return { text: f.label, value: f.key };
-        });
-    }
-  },
+
+ 
   methods: {
     onSelectRow(items){
       console.log(items)
       this.selectedRow = items;
-      // this.$root.$emit('bv::show::modal', 'viewModal', '#btnShow')
     },
     getImgUrl(pet) {
     var images = require.context('@/assets/images/avatars/', false, /\.jpg$/)
@@ -263,27 +251,32 @@ export default {
           break;
       }
     },
-    hideModal() {
-      this.$refs['addModal'].hide()
+    edit(index){
+      console.log(index)
+      let data = this.items.filter((val, ind) => ind === index)
+      this.selectedRow = data
+      this.imageUrl = this.getImgUrl(data[0].createdBy.avatar)
+      // this.$refs['editModal'].show()
+      this.$root.$emit('bv::show::modal', 'editModal', '#btnShow')
+        // this.$router.push({ name: '' })
     },
-    AddProperty() {
-      console.log(this.addAssigned, this.property, this.requesters.filter(val => val.label == this.requester)[0].value, this.cost, this.date, this.subject, this.notes )
-      items.push({
-        assigned: this.addAssigned,
-        property: this.property,
-        createdBy: {
-          avatar: this.requesters.filter(val => val.label == this.requester)[0] ? this.requesters.filter(val => val.label == this.requester)[0].value : '',
-          name: this.requester
-        },
-        cost: this.cost,
-        schedule: {
-          date: this.date,
-          subject: this.subject,
-          notes: this.notes
-        }
-      })
-      this.$refs['addModal'].hide()
-    }
+    EditRequest(){
+      console.log(this.selectedRow[0])
+      this.$refs['editModal'].hide()
+
+    },
+    del(ind) {
+      this.items = this.items.filter((val, index) => index !== ind)
+    },
+    hideModal() {
+      this.$refs['editModal'].hide()
+    },
+    imageSelected(e) {
+      e.preventDefault()
+      const file = e.target.files[0]
+      // this.image = file
+      this.imageUrl = URL.createObjectURL(file)
+    },
   }
 };
 </script>

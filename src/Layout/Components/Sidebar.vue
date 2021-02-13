@@ -37,44 +37,98 @@ export default {
       admin: '',
       landlordMenu: [
         {
-            title: 'Dashboard',
-            icon: 'pe-7s-home',
-            href: '/',
+          title: 'Dashboard',
+          icon: 'pe-7s-home',
+          href: '/',
         },
         {
-            title: 'Calendar',
-            icon: 'pe-7s-date',
-            href: '/calendar',
+          title: 'Calendar',
+          icon: 'pe-7s-date',
+          href: '/calendar',
         },
         {
-            title: 'Service Requests',
-            icon: 'pe-7s-notebook',
-            href: '/service-request',
+          title: 'Service Requests',
+          icon: 'pe-7s-notebook',
+          child: [
+            {
+              href: "/service-request-list",
+              title: "View List"
+            },
+            {
+              href: "/service-request-add",
+              title : "Add Request"
+            },
+          ]
         },
         {
-            title: 'Tenants list',
-            icon: 'pe-7s-note2',
-            href: '/tenants',
+          title: 'Tenants list',
+          icon: 'pe-7s-note2',
+          child: [
+            {
+              href: "/tenant-list",
+              title: "View List"
+            },
+            {
+              href: "/tenant-add",
+              title : "Add Tenant"
+            },
+          ]
         },
         {
             title: 'properties list',
             icon: 'pe-7s-culture',
-            href: '/properties',
+             child: [
+            {
+              href: "/properties-list",
+              title: "View List"
+            },
+            {
+              href: "/properties-add",
+              title : "Add Property"
+            },
+          ]
         },
         {
             title: 'Service Provider List',
             icon: 'pe-7s-coffee',
-            href: '/service-provider',
+            child: [
+              {
+                href: "/service-provider-list",
+                title: "View List"
+              },
+              {
+                href: "/service-provider-add",
+                title : "Add Provider"
+              },
+            ]
         },
         {
             title: 'Applicant Funnel List',
             icon: 'pe-7s-news-paper',
-            href: '/applicant-funnel',
+            child: [
+              {
+                href: "/applicant-drag-drop",
+                title: "Drag and Drop from Colums"
+              },
+              {
+                href: "/applicant-profile",
+                title : "Applicant Profile"
+              },
+            ]
         },
         {
             title: 'Employees List',
             icon: 'pe-7s-id',
-            href: '/employees',
+            child: [
+              {
+                href: "/employee-list",
+                title: "View List"
+              },
+              {
+                href: "/employee-add",
+                title : "Add Employee"
+              },
+            ]
         },
         
       ],

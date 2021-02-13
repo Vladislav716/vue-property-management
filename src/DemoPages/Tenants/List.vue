@@ -129,13 +129,19 @@
               </div>
               <VuePerfectScrollbar class="app-sidebar-scroll h-300p" >
                 <div class="p-2">
-                  <b-table striped hover :items="selectedContact[0].transactions" :fields="transactionFields"></b-table>
+                  <b-table striped hover :items="selectedContact[0].transactions" :fields="transactionFields">
+                    <template #cell(actions)="row">
+                      <button class="border-0 btn-transition btn btn-outline-danger" @click="delTransaction(selectedContact[0].index, row.value)">
+                        <i class="pe-7s-trash fsize-1" ></i>
+                      </button>
+                    </template>
+                  </b-table>
                 </div>
               </VuePerfectScrollbar>
               <div class="app-inner-layout__bottom-pane d-block text-center">
                 <div class="mb-0 position-relative row form-group">
                   <div class="col-sm-12">
-                    <b-button variant="success" class="pull-right"><font-awesome-icon class="mr-2" icon="plus" />Add Transaction</b-button>
+                    <b-button variant="success" class="pull-right" @click="addTransaction(selectedContact[0].index)"><font-awesome-icon class="mr-2" icon="plus" />Add Transaction</b-button>
                   </div>
                 </div>
               </div>
@@ -155,6 +161,36 @@
                   </div>
                   <b-row class="m-0 w-100">
                     <b-col md="4 text-right">
+                      <h6>First Name : </h6>
+                    </b-col>
+                    <b-col md="8">
+                      <h6> {{selectedContact[0].name.first}}</h6>
+                    </b-col>
+                    <b-col md="4 text-right">
+                      <h6>Last Name : </h6>
+                    </b-col>
+                    <b-col md="8">
+                      <h6>{{selectedContact[0].name.last}}</h6>
+                    </b-col>
+                    <b-col md="4 text-right">
+                      <h6>Phone : </h6>
+                    </b-col>
+                    <b-col md="8">
+                      <h6> {{selectedContact[0].profile.phone}}</h6>
+                    </b-col>
+                    <b-col md="4 text-right">
+                      <h6>Email : </h6>
+                    </b-col>
+                    <b-col md="8">
+                      <h6> {{selectedContact[0].profile.email}}</h6>
+                    </b-col>
+                    <b-col md="4 text-right">
+                      <h6>Address : </h6>
+                    </b-col>
+                    <b-col md="8">
+                      <h6> {{selectedContact[0].profile.address}}</h6>
+                    </b-col>
+                    <b-col md="4 text-right">
                       <h6>Current Property : </h6>
                     </b-col>
                     <b-col md="8">
@@ -173,6 +209,13 @@
                   </b-row>
                 </div>
               </VuePerfectScrollbar>
+               <div class="app-inner-layout__bottom-pane d-block text-center">
+                <div class="mb-0 position-relative row form-group">
+                  <div class="col-sm-12">
+                    <b-button variant="success" class="pull-right" @click="editProfile(selectedContact[0].index)"><font-awesome-icon class="mr-2" icon="plus" />Edit Profile</b-button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="table-responsive card w-50 height-fit-content">
               <div class="app-inner-layout__top-pane border-bottom h-65p badge-info">
@@ -214,6 +257,13 @@
                   </li>
                 </ul>
               </VuePerfectScrollbar>
+               <div class="app-inner-layout__bottom-pane d-block text-center">
+                <div class="mb-0 position-relative row form-group">
+                  <div class="col-sm-12">
+                    <b-button variant="success" class="pull-right" @click="addTask(selectedContact[0].index)"><font-awesome-icon class="mr-2" icon="plus" />Add Task</b-button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="app-inner-layout__content height-fit-content mb-2">
@@ -250,14 +300,212 @@
                   </b-table>
                 </div>
               </VuePerfectScrollbar>
+               <div class="app-inner-layout__bottom-pane d-block text-center">
+                <div class="mb-0 position-relative row form-group">
+                  <div class="col-sm-12">
+                    <b-button variant="success" class="pull-right" @click="addRequest(selectedContact[0].index)"><font-awesome-icon class="mr-2" icon="plus" />Add Request</b-button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     </div>
-
-
+    <!-- Transaction modal -->
+    <b-modal size="md" ref="transactionModal" id="transactionModal" hide-footer title="Add Transaction">
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Amount :
+        </b-col>
+        <b-col md="8">
+          <b-form-input type="number" v-model="transaction.amount" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Date :
+        </b-col>
+        <b-col md="8">
+           <b-input-group class="mb-3">
+            <b-form-input
+              id="example-input"
+              v-model="transaction.date"
+              type="text"
+              placeholder="YYYY-MM-DD"
+              autocomplete="off"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-form-datepicker
+                v-model="transaction.date"
+                button-only
+                right
+                locale="en-US"
+                aria-controls="example-input"
+              ></b-form-datepicker>
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Type :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="transaction.type" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="pull-right p-4">
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="hideTransaction">Ok</b-button>
+      </b-row>
+    </b-modal>
+    <!-- Edit Profile Modal -->
+    <b-modal size="md" ref="profileModal" id="profileModal" hide-footer title="Add Transaction">
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+         First Name :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].name.first" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+         Last Name :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].name.last" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+         Emaiil :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].profile.email" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+         Phone :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].profile.phone" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Current Property :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].profile.currentProperty" placeholder="Enter the property"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Select an Avatar :
+        </b-col>
+        <b-col md="8">
+          <b-button @click="$refs.avatarInput.click()" class="btn-right mr-3">Select an image</b-button>
+          <b-img v-if="avatarUrl" :src="avatarUrl" class="w-200p"></b-img>
+          <input style="display: none" ref="avatarInput" type="file" @change="avatarSelected" enctype="multipart/form-data">
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          License :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="selectedContact[0].profile.license.no" placeholder="Enter the license No"></b-form-input>
+          <b-button @click="$refs.licenseInput.click()" class="btn-right mr-3">Select an image</b-button>
+          <b-img v-if="licenseUrl" :src="licenseUrl" class="w-200p"></b-img>
+          <input style="display: none" ref="licenseInput" type="file" @change="licenseSelected" enctype="multipart/form-data">
+        </b-col>
+      </b-row>
+     
+      <b-row class="pull-right p-4">
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="hideProfile">Ok</b-button>
+      </b-row>
+    </b-modal>
+    <!-- Task Modal -->
+    <b-modal size="md" ref="taskModal" id="taskModal" hide-footer title="Add Task">
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Task Name :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="task.name" placeholder="Enter the task name"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Task Description :
+        </b-col>
+        <b-col md="8">
+          <b-form-textarea v-model="task.description" placeholder="Enter the task description"></b-form-textarea>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          status :
+        </b-col>
+        <b-col md="8">
+          <b-form-radio-group
+            v-model="task.status"
+            :options="taskOptions"
+            class="mb-3"
+            value-field="item"
+            text-field="name"
+            disabled-field="notEnabled"
+          ></b-form-radio-group>
+        </b-col>
+      </b-row>
+      <b-row class="pull-right p-4">
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="hideTask">Ok</b-button>
+      </b-row>
+    </b-modal>
+    <!-- Add Request Modal -->
+    <b-modal size="md" ref="requestModal" id="requestModal" hide-footer title="Add Task">
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Task Name :
+        </b-col>
+        <b-col md="8">
+          <b-form-input v-model="request.property" placeholder="Enter the task name"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Task Description :
+        </b-col>
+        <b-col md="8">          
+          <b-form-input v-model="request.cost" placeholder="Enter the task name"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          status :
+        </b-col>
+        <b-col md="8">
+          <b-form-radio-group
+            v-model="request.assigned"
+            :options="requestOptions"
+            class="mb-3"
+            value-field="item"
+            text-field="name"
+            disabled-field="notEnabled"
+          ></b-form-radio-group>
+        </b-col>
+      </b-row>
+      <b-row class="pull-right p-4">
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="hideRequest">Ok</b-button>
+      </b-row>
+    </b-modal>
   </div>
 </template>
 
@@ -291,7 +539,7 @@ export default {
         subheading: "Can view Tenants list and their profile, balance, latest transactions, chat box...",
         icon: "pe-7s-note2 icon-gradient bg-mixed-hopes",
         isMobileOpen: false,
-        transactionFields: ['propertyName', 'income', 'expenses'],
+        transactionFields: ['amount', 'date', 'type', 'actions'],
         requestFields: ['property', 'cost', 'assigned'],
         chatContacts: [
           {
@@ -326,27 +574,35 @@ export default {
             ],
             transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'alina@email.com',
+              phone: '+12345678987',
+              sex: 'female',
+              address: 'Address1',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -435,29 +691,37 @@ export default {
                 time: '11:04 AM | Yesterday'
               }
             ],
-             transactions: [
+               transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'choba@email.com',
+              phone: '+3215487952',
+              sex: 'female',
+              address: 'Address2',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -546,29 +810,37 @@ export default {
                 time: '11:04 AM | Yesterday'
               }
             ],
-             transactions: [
+               transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'alexey@email.com',
+              phone: '+154587887854',
+              sex: 'female',
+              address: 'Address3',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -657,29 +929,37 @@ export default {
                 time: '11:04 AM | Yesterday'
               }
             ],
-             transactions: [
+               transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'ubensko@email.com',
+              phone: '+154587887854',
+              sex: 'female',
+              address: 'Address3',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -768,29 +1048,37 @@ export default {
                 time: '11:04 AM | Yesterday'
               }
             ],
-             transactions: [
+               transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'mary@email.com',
+              phone: '+154587887854',
+              sex: 'female',
+              address: 'Address3',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -879,29 +1167,37 @@ export default {
                 time: '11:04 AM | Yesterday'
               }
             ],
-             transactions: [
+               transactions: [
               {
-                propertyName: 'Property1',
-                income: '562410',
-                expenses: '225620'
+                amount: '52660',
+                date: '2020-12-25',
+                type: 'type1',
+                actions: 0
               },
               {
-                propertyName: 'Property2',
-                income: '562410',
-                expenses: '225620'
+                amount: '1200',
+                date: '2020-12-05',
+                type: 'type2',
+                actions: 1
               },
               {
-                propertyName: 'Property3',
-                income: '562410',
-                expenses: '225620'
+                amount: '332510',
+                date: '2020-12-25',
+                type: 'type3',
+                actions: 2
               },
               {
-                propertyName: 'Property4',
-                income: '562410',
-                expenses: '225620'
+                amount: '2656874',
+                date: '2020-12-25',
+                type: 'type4',
+                actions: 3
               },
             ],
             profile: {
+              email: 'steven@email.com',
+              phone: '+154587887854',
+              sex: 'female',
+              address: 'Address3',
               description: 'Short Description about me',
               license: {no: '226320', image: 'abstract1'},
               currentProperty: 'Property1'
@@ -962,7 +1258,20 @@ export default {
           },
         ],
         selectedContact: {},
-      
+        transaction: {},
+        avatarUrl: null,
+        licenseUrl: null,
+        task: {},
+        taskOptions: [
+          { item: 'New', name: 'New' },
+          { item: 'Complete', name: 'Complete' },
+          { item: 'Reject', name: 'Reject' },
+        ],
+        request: {},
+        requestOptions: [
+          { item: 'assigned', name: 'Assigned'},
+          { item: 'unassigned', name: 'Unassigned'}
+        ]
     }),
 
     methods: {
@@ -991,8 +1300,56 @@ export default {
       contactClick(ind) {
         console.log(ind)
         this.selectedContact = this.chatContacts.filter((val, index) => index === ind)
-        console.log(this.selectedContact)
-      }
+      },
+      delTransaction(contactInd, transactionInd) {
+        this.chatContacts[contactInd].transactions.filter((val) => val.actions !== transactionInd)
+        console.log(this.chatContacts[contactInd].transactions[transactionInd])
+      },
+      addTransaction(ind){
+        console.log(ind)
+        this.$root.$emit('bv::show::modal', 'transactionModal', '#btnShow')
+
+      },
+      hideTransaction(){
+        alert(`amount: ${this.transaction.amount}, date: ${this.transaction.date}, type: ${this.transaction.type}`)
+        this.$refs['transactionModal'].hide()
+      },
+      addTask(ind) {
+        console.log(ind)
+        this.$root.$emit('bv::show::modal', 'taskModal', '#btnShow')
+      },
+      hideTask() {
+        alert(`taskName: ${this.task.name}, taskDescription: ${this.task.description}, taskStatus: ${this.task.status}`)
+        this.$refs['taskModal'].hide()
+      },
+      addRequest(ind) {
+        console.log(ind)
+        this.$root.$emit('bv::show::modal', 'requestModal', '#btnShow')
+      },
+      hideRequest(){
+        alert(`property ${this.request.property}, cost: ${this.request.cost}, assigned: ${this.request.assigned}`)
+        this.$refs['requestModal'].hide()
+      },
+      editProfile(ind){
+        console.log(ind, '---------')
+        this.$root.$emit('bv::show::modal', 'profileModal', '#btnShow')
+      },
+      hideProfile() {
+        // alert(this.selectedContact[0].profile)
+        this.$refs['profileModal'].hide()
+      },
+      avatarSelected(e) {
+        e.preventDefault()
+        const file = e.target.files[0]
+        this.image = file
+        this.avatarUrl = URL.createObjectURL(file)
+      },
+      licenseSelected(e) {
+        e.preventDefault()
+        const file = e.target.files[0]
+        this.image = file
+        this.licenseUrl = URL.createObjectURL(file)
+      },
       
     },
     beforeMount(){
