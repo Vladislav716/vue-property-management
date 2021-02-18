@@ -12,7 +12,7 @@
             <b-button variant="info" class="mb-2 mr-2 w-100p" @click="propertyDetail(property.index)">More Detail</b-button>
             <b-button variant="success" class="mb-2 w-100p" @click="propertyEdit(property.index)">Edit</b-button>
           </div>
-          <slick ref="slick" :options="slickOptions2" v-if="render">
+          <slick ref="slick" :options="slickOptions2">
             <div v-for="image in property.imageUrls" :key="image.url">
               <div class="m-0" v-if="image.type === 'image'">
                 <img :src="image.url" class="w-100 h-180p" alt />
@@ -70,152 +70,10 @@
       </div>
 
     </div>
-      <!-- Property Edit Modal -->
-    <b-modal size="lg" ref="viewModal" id="viewModal" hide-footer>
-      <div v-if="selectedProperty[0]" class="p-3">
-        <b-row>
-          <b-col md="4" class="text-right">
-            <p>Property Images :</p>
-          </b-col>
-          <b-col md="8">
-            <b-button @click="$refs.avatarInput.click()" class="btn-right mb-3">Select an image</b-button>
-            <div v-if="imageUrls" class="flex flex-md-wrap">
-              <div v-for="imageUrl in imageUrls" :key="imageUrl.url">
-                <div  class="position-relative mr-1 mb-1" v-if="imageUrl.type === 'image'">
-                  <b-img :src="imageUrl.url" class="w-100p">
-                  </b-img>
-                    <span class="del-image" @click="delImage(imageUrl.url)"><i class="pe-7s-close del-icon"></i></span>
-                </div>
-                <div  class="position-relative mr-1 mb-1" v-if="imageUrl.type === 'video'">
-                  <video :src="imageUrl.url" class="w-100p">
-                  </video>
-                    <span class="del-image" @click="delImage(imageUrl.url)"><i class="pe-7s-close del-icon"></i></span>
-                </div>
-              </div>
-            </div>
-            <input style="display: none" ref="avatarInput" type="file" @change="imageSelected" enctype="multipart/form-data">
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Property Name :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-input v-model="selectedProperty[0].propertyName"></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Address :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-input v-model="selectedProperty[0].address"></b-form-input>
-            <!-- <vue-google-autocomplete
-              id="map"
-              classname="form-control"
-              placeholder="Start typing"
-              v-on:placechanged="getAddressData"
-            >
-            </vue-google-autocomplete> -->
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Unit :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-input v-model="selectedProperty[0].unit"></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Price :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-input type="number" v-model="selectedProperty[0].price"></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Utilities :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-checkbox-group
-              id="checkbox-group"
-              v-model="selectedProperty[0].utilities"
-              name="flavour-2"
-          >
-            <b-form-checkbox value="parking" class="text-success">parking</b-form-checkbox>
-            <b-form-checkbox value="heating" class="text-danger">heating</b-form-checkbox>
-            <b-form-checkbox value="lights" class="text-warning">lights</b-form-checkbox>
-            <b-form-checkbox value="water" class="text-info">water</b-form-checkbox>
-          </b-form-checkbox-group>
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Teanats :</p>
-          </b-col>
-          <b-col md="8">
-            <multiselect
-              v-model="selectedProperty[0].tenanats"
-              :options="tenantOption"
-              :multiple="true">
-            </multiselect>
-          </b-col>
-        </b-row> 
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Task List :</p>
-          </b-col>
-          <b-col md="8">
-            <div class="mb-2 row pr-3 pl-3">
-              <b-form-input placeholder="Task Name" class="mb-2 w-70" v-model="taskContent.taskName"></b-form-input>
-              <b-textarea placeholder="Task Description" class="w-70 mb-2" v-model="taskContent.description"></b-textarea>
-              <b-form-radio-group
-                v-model="taskContent.status"
-                :options="taskStatusOption"
-                class="mb-2 w-70"
-                value-field="item"
-                text-field="name"
-                disabled-field="notEnabled"
-              ></b-form-radio-group>
-              <b-button variant="danger" @click="AddTask"><i class="pe-7s-plus"></i> Add</b-button>
-              <VuePerfectScrollbar class="app-sidebar-scroll h-180p w-70" v-once>
-                <b-table bordered class="mb-0" striped hover :items="selectedProperty[0].tasks" :fields="taskFields">
-                  <template #cell(status)="row">
-                    <div v-if="row.value == 0" class="badge badge-info ml-2">new</div>
-                    <div v-if="row.value == 1" class="badge badge-success ml-2">completed</div>
-                    <div v-if="row.value == 2" class="badge badge-danger ml-2">rejected</div>
-                  </template>
-                  <template #cell(index)="row">
-                    <button class="border-0 btn-transition btn btn-outline-danger" @click="delTask(row.value)">
-                      <i class="pe-7s-trash"></i>
-                    </button>
-                  </template>
-                </b-table>
-              </VuePerfectScrollbar>
-            </div>
-          </b-col>
-        </b-row>
-        <b-row class="mt-3">
-          <b-col md="4" class="text-right">
-            <p> Total Income :</p>
-          </b-col>
-          <b-col md="8">
-            <b-form-input type="number" v-model="selectedProperty[0].income"></b-form-input>
-          </b-col>
-        </b-row>
-      </div>
-      
-      <!-- <b-row class="pull-right p-4">
-        <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button>
-      </b-row> -->
-    </b-modal>
     <!-- Property Detail Modal -->
     <b-modal size="md" ref="detailModal" id="detailModal" hide-footer>
       <div v-if="selectedProperty[0]">
-        <slick ref="slick" :options="slickOptions2" v-if="render">
+        <slick ref="slick" :options="slickOptions2">
           <div v-for="image in imageUrls" :key="image.url">
             <div class="m-0" v-if="image.type === 'image'">
               <img :src="image.url" class="w-100 h-180p" alt />
@@ -292,7 +150,6 @@
 
 <script>
 import { library } from "@fortawesome/fontawesome-svg-core";
-// import VueCircle from "vue2-circle-progress";
 import Slick from "vue-slick";
 
 import PageTitle from "@/Layout/Components/PageTitle.vue";
@@ -302,9 +159,7 @@ import {
   faSearch,
   faStar
 } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
-import Multiselect from 'vue-multiselect'
 // import VueGoogleAutocomplete from 'vue-google-autocomplete'
 
 
@@ -317,10 +172,7 @@ export default {
   components: {
     PageTitle,
     Slick,
-    // VueCircle,
-    // "font-awesome-icon": FontAwesomeIcon,
     VuePerfectScrollbar,
-    Multiselect
     // VueGoogleAutocomplete
   },
   data: () => ({
@@ -364,7 +216,7 @@ export default {
         utilities: [
           'parking', 'heating', 'lights', 'water'
         ],
-        tenants: ['Hymile Jhone', 'Lave Surry'],
+        tenants: ['Ommition Gason', 'Dolphi Ruchel'],
         tasks: [
           {
             index: 0,
@@ -420,7 +272,7 @@ export default {
         utilities: [
           'parking', 'lights', 'water'
         ],
-        tenants: ['Hymile Jhone', 'Lave Surry'],
+        tenants: ['Dolphi Ruchel', 'Hymile Jhone'],
         tasks: [
           {
             index: 0,
@@ -448,18 +300,8 @@ export default {
     ],
     imageUrls: [],
     selectedProperty: {},
-    render: true,
     selected: [],
-    // requesters: [{label: 'Michel Madrid', value: '1'},
-    //  {label: 'Ommiton Gason', value: '2'},
-    //  {label: 'Dolphi Ruchel', value: '3'},
-    //  {label: 'Json Alpil', value: '4'}],
-    // requester: ''
     tenantOption: [
-    //   {label: 'Michel Madrid', value: '1'},
-    //  {label: 'Ommiton Gason', value: '2'},
-    //  {label: 'Dolphi Ruchel', value: '3'},
-    //  {label: 'Json Alpil', value: '4'}
     'Michel Madrid', 'Ommition Gason', 'Dolphi Ruchel', 'Jason Alpil', 'Hymile Jhone', 'Lave Surry'
     ],
     taskFields: [
@@ -508,8 +350,11 @@ export default {
       this.selectedProperty[0].imageUrls.map(image => {
         this.imageUrls.push(image)
       });
-      console.log(this.selectedProperty)
-      this.$root.$emit('bv::show::modal', 'viewModal', '#btnShow')
+      this.$router.push({
+        name: 'propertiesAdd',
+        params: {item: this.selectedProperty[0]}, 
+      })
+      // this.$root.$emit('bv::show::modal', 'viewModal', '#btnShow')
     },
     propertyDetail(index) {
       this.selectedProperty = this.properties.filter((val, ind) => ind === index)
@@ -520,54 +365,10 @@ export default {
       console.log(this.selectedProperty)
       this.$root.$emit('bv::show::modal', 'detailModal', '#btnShow')
     },
-    hideModal() {
-      this.$refs['viewModal'].hide()
-    },
-    imageSelected(e) {
-      e.preventDefault()
-      const file = e.target.files[0]
-      this.image = file
-      console.log(file)
-      if(file.type === 'video/mp4'){
-        this.imageUrls.push({
-          type: 'video',
-          url: URL.createObjectURL(file)
-        })  
-      }else if(file.type === 'image/png' || file.type === 'image/jpg'){
-         this.imageUrls.push({
-          type: 'image',
-          url: URL.createObjectURL(file)
-        }) 
-      }
-      console.log(this.imageUrls)
-      this.properties[this.selectedProperty[0].index].imageUrls = this.imageUrls
-      this.render = false;
-      this.$nextTick(() => {
-        this.render = true;
-      });
-    },
-    delImage(imageUrl) {
-      this.imageUrls = this.imageUrls.filter(val => val.url !== imageUrl)
-      console.log(this.imageUrls)
-      this.properties[this.selectedProperty[0].index].imageUrls = this.imageUrls
-      this.render = false;
-      this.$nextTick(() => {
-        this.render = true;
-      });
-    },
     getAddressData: function (addressData, placeResultData, id) {
       console.log(addressData, placeResultData, id)
       this.selectedProperty[0].address = addressData;
     },
-    AddTask() {
-      console.log(this.taskContent)
-      this.selectedProperty[0].tasks.push(this.taskContent)
-      this.taskContent = {}
-    },
-    delTask(ind) {
-      this.selectedProperty[0].tasks.filter((val, index) => index !== ind)
-    }
-  
   },
   beforeMount() {
     // let recaptchaScript = document.createElement('script')
@@ -589,9 +390,6 @@ export default {
       })
     });
   },
-   mounted() {
-  
-  }
 }
 </script>
 
@@ -603,22 +401,6 @@ export default {
 
   .flex {
     display: flex;
-  }
-
-   .del-image{
-    position: absolute;
-    top: 0;
-    right:0;
-  }
-
-  .del-icon {
-    background: white;
-    border-radius: 20px;
-    color: red;
-    font-weight: bold;
-    font-size: 17px;
-    border: 1px solid #464646;
-    cursor: pointer;
   }
 
 </style>

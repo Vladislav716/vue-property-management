@@ -10,10 +10,10 @@
         <b-col md="4" class="text-right">
           <p>Property Images :</p>
         </b-col>
-        <b-col md="8" v-if="render">
+        <b-col md="8">
           <b-button @click="$refs.avatarInput.click()" class="btn-right mb-3">Select an image</b-button>
-          <div v-if="imageUrls" class="flex flex-md-wrap">
-            <div v-for="imageUrl in imageUrls" :key="imageUrl.url">
+          <div v-if="item.imageUrls" class="flex flex-md-wrap">
+            <div v-for="imageUrl in item.imageUrls" :key="imageUrl.url">
               <div  class="position-relative mr-1 mb-1" v-if="imageUrl.type === 'image'">
                 <b-img :src="imageUrl.url" class="w-100p">
                 </b-img>
@@ -34,7 +34,7 @@
           <p> Property Name :</p>
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="property.propertyName"></b-form-input>
+          <b-form-input v-model="item.propertyName"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -42,7 +42,7 @@
           <p> Address :</p>
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="property.address"></b-form-input>
+          <b-form-input v-model="item.address"></b-form-input>
           <!-- <vue-google-autocomplete
             id="map"
             classname="form-control"
@@ -57,7 +57,7 @@
           <p> Unit :</p>
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="property.unit"></b-form-input>
+          <b-form-input v-model="item.unit"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -65,7 +65,7 @@
           <p> Price :</p>
         </b-col>
         <b-col md="8">
-          <b-form-input type="number" v-model="property.price"></b-form-input>
+          <b-form-input type="number" v-model="item.price"></b-form-input>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -75,7 +75,7 @@
         <b-col md="8">
           <b-form-checkbox-group
             id="checkbox-group"
-            v-model="property.utilities"
+            v-model="item.utilities"
             name="flavour-2"
         >
           <b-form-checkbox value="parking" class="text-success">parking</b-form-checkbox>
@@ -87,11 +87,11 @@
       </b-row>
       <b-row class="mt-3">
         <b-col md="4" class="text-right">
-          <p> Teanats :</p>
+          <p> Tenants :</p>
         </b-col>
         <b-col md="8">
           <multiselect
-            v-model="property.tenanats"
+            v-model="item.tenanats"
             :options="tenantOption"
             :multiple="true">
           </multiselect>
@@ -115,7 +115,7 @@
             ></b-form-radio-group>
             <b-button variant="danger" @click="AddTask"><i class="pe-7s-plus"></i> Add</b-button>
             <VuePerfectScrollbar class="app-sidebar-scroll h-180p w-70">
-              <b-table bordered class="mb-0" striped hover :items="property.tasks" :fields="taskFields" >
+              <b-table bordered class="mb-0" striped hover :items="item.tasks" :fields="taskFields" >
                 <template #cell(status)="row">
                   <div v-if="row.value == 0" class="badge badge-info ml-2">new</div>
                   <div v-if="row.value == 1" class="badge badge-success ml-2">completed</div>
@@ -136,10 +136,10 @@
           <p> Total Income :</p>
         </b-col>
         <b-col md="8">
-          <b-form-input type="number" v-model="property.income"></b-form-input>
+          <b-form-input type="number" v-model="item.income"></b-form-input>
           <b-button variant="success" class="mt-3" @click="AddProperty">
             <i class="pe-7s-plus"></i>
-            Add Property
+            {{$route.params.item ? 'Edit Property' : 'Add Property'}}
           </b-button>
         </b-col>
       </b-row>
@@ -149,8 +149,6 @@
 
 <script>
 import { library } from "@fortawesome/fontawesome-svg-core";
-// import VueCircle from "vue2-circle-progress";
-// import Slick from "vue-slick";
 
 import PageTitle from "@/Layout/Components/PageTitle.vue";
 import {
@@ -159,7 +157,6 @@ import {
   faSearch,
   faStar
 } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Multiselect from 'vue-multiselect'
 
@@ -187,12 +184,19 @@ export default {
       slidesToShow: 1,
       dots: true
     },
-    property: {
-      tasks: []
+    item:{
+      imageUrls: [],
+      tasks: [],
+      address: '',
+      carousal: [],
+      income: '',
+      index: '',
+      price: '',
+      propertyName: '',
+      tenants: [],
+      unit: '',
+      utilities: []
     },
-    imageUrls: [],
-    selectedProperty: {},
-    render: true,
     tenantOption: [
     'Michel Madrid', 'Ommition Gason', 'Dolphi Ruchel', 'Jason Alpil', 'Hymile Jhone', 'Lave Surry'
     ],
@@ -224,7 +228,11 @@ export default {
     
   }),
 
-  computed: {
+  created() {
+    if(this.$route.params.item){
+      console.log(this.$route.params.item)
+      this.item = this.$route.params.item;
+    }
       
   },
   methods: {
@@ -235,14 +243,6 @@ export default {
     getVideoUrl(pet){
       var videos = require.context('@/assets/video/', false, /\.mp4$/)
       return videos('./' + pet + ".mp4");
-    },
-    propertyEdit(index) {
-      this.selectedProperty = this.properties.filter((val, ind) => ind === index)
-      this.imageUrls = []
-      this.property.imageUrls.map(image => {
-        this.imageUrls.push(image)
-      });
-      this.$root.$emit('bv::show::modal', 'viewModal', '#btnShow')
     },
     hideModal() {
       this.$refs['viewModal'].hide()
@@ -258,36 +258,27 @@ export default {
           url: URL.createObjectURL(file)
         })  
       }else if(file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg'){
-         this.imageUrls.push({
+         this.item.imageUrls.push({
           type: 'image',
           url: URL.createObjectURL(file)
         }) 
       }
-      console.log(this.imageUrls)
-      this.render = false;
-      this.$nextTick(() => {
-        this.render = true;
-      });
     },
     delImage(imageUrl) {
-      this.imageUrls = this.imageUrls.filter(val => val.url !== imageUrl)
-      console.log(this.imageUrls)
-      this.render = false;
-      this.$nextTick(() => {
-        this.render = true;
-      });
+      this.item.imageUrls = this.item.imageUrls.filter(val => val.url !== imageUrl)
+      console.log(this.item.imageUrls)
     },
     AddTask() {
       console.log(this.taskContent)
-      this.property.tasks.push(this.taskContent)
+      this.item.tasks.push(this.taskContent)
       this.taskContent = {}
     },
     AddProperty() {
-      console.log(this.property)
+      console.log(this.item.tenants)
     },
     delTask(row) {
-      console.log(row.index, this.property.tasks)
-      this.property.tasks.filter((val, ind) => ind !== row.index)
+      console.log(row.index, this.item.tasks)
+      this.item.tasks = this.item.tasks.filter((val, ind) => ind !== row.index)
     }
     
   },
@@ -296,10 +287,6 @@ export default {
 </script>
 
 <style scoped>
-  .unit-flex {
-    display: flex;
-    justify-content: space-between;
-  }
 
   .flex {
     display: flex;

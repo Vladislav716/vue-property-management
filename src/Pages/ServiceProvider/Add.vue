@@ -117,7 +117,8 @@
           </b-col>
         </b-row>
         <div class="pull-right">
-          <b-button variant="success"  @click="AddProvider"><i class="pe-7s-plus"></i> Add Provider</b-button>
+          <b-button variant="success"  @click="AddProvider"><i class="pe-7s-plus"></i> 
+          {{$route.params.item ? ' Edit Provider' : ' Add Provider'}}</b-button>
         </div>
 
       </div>
@@ -158,16 +159,16 @@ export default {
         icon: "pe-7s-coffee icon-gradient bg-mixed-hopes",
         item: {
           task: [],
-          name: {}
+          name: {}, 
+          imageUrl: '',
         },
-        taskContent: {},
         imageUrl: null,
-         taskStatusOption: [
+        taskContent: {},
+        taskStatusOption: [
           { item: 0, name: 'New' },
           { item: 1, name: 'Complete' },
           { item: 2, name: 'Reject' },
         ],
-        render: true,
         taskFields: [
           {
             key: "taskName",
@@ -198,19 +199,19 @@ export default {
         
     }),
 
-    computed: {
-       
+    created() {
+      if(this.$route.params.item){
+        this.item = this.$route.params.item
+        this.imageUrl = this.$route.params.item.imageUrl
+      }
+        
     },
     methods: {
-      getImgUrl(pet) {
-        var images = require.context('@/assets/images/avatars/', false, /\.jpg$/)
-        return images('./' + pet + ".jpg")
-      },
       imageSelected(e) {
         e.preventDefault()
         const file = e.target.files[0]
+        console.log(URL.createObjectURL(file))
         this.imageUrl = URL.createObjectURL(file)
-        console.log(this.imageUrl)
       },
       AddTask(){
         this.item.task.push(this.taskContent)
@@ -218,7 +219,6 @@ export default {
         this.taskContent = {}
       },
       delTask(row){
-        console.log(this.item.task, 'past')
         this.item.task = this.item.task.filter((val, ind) => ind !== row.index)
       } ,
       AddProvider() {

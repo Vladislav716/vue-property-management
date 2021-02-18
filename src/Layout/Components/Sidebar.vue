@@ -109,11 +109,11 @@ export default {
         {
             title: 'Applicant Funnel',
             icon: 'pe-7s-news-paper',
-            href: "/applicant-drag-drop",
+            href: "/applicant-list",
             child: [
               {
-                href: "/applicant-drag-drop",
-                title: "Drag and Drop from Colums"
+                href: "/applicant-list",
+                title: "View List"
               },
               {
                 href: "/applicant-profile",

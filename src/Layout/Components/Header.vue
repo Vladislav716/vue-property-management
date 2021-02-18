@@ -3,8 +3,6 @@
     <div class="logo-src" />
     <div class="app-header__content">
       <div class="app-header-left">
-        <!-- <SearchBox /> -->
-        <!-- <MegaMenu /> -->
       </div>
       <div class="app-header-right">
         <HeaderDots />
@@ -35,8 +33,6 @@
 </template>
 
 <script>
-// import SearchBox from "./Header/SearchBox";
-// import MegaMenu from "./Header/MegaMenu";
 import HeaderDots from "./Header/HeaderDots";
 import UserArea from "./Header/HeaderUserArea";
 
@@ -48,8 +44,6 @@ library.add(faEllipsisV);
 export default {
   name: "Header",
   components: {
-    // SearchBox,
-    // MegaMenu,
     HeaderDots,
     UserArea,
     "font-awesome-icon": FontAwesomeIcon

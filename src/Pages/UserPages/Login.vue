@@ -50,13 +50,13 @@
               <div class="divider" />
               <div>
                 <Form>
-                  <b-row form>
-                    <b-col md="12">
-                      <b-form-group>
-                        <Label for="">User Type</Label>
-                         <b-form-select v-model="userSelected" :options="userOptions"></b-form-select>
-                      </b-form-group>
-                    </b-col>
+                  <b-tabs content-class="mt-3" lazy v-model="userType">
+                    <b-tab title="Landlord">
+                    </b-tab>
+                    <b-tab title="Tenant">
+                    </b-tab>
+                  </b-tabs>
+                  <b-row>
                     <b-col md="6">
                       <b-form-group>
                         <Label for="loginEmail">Email</Label>
@@ -126,11 +126,7 @@ export default {
     dismissSecs: 10,
     dismissCountDown: 0,
     errorValue: '',
-    userSelected: 'landlord',
-    userOptions: [
-      { value: 'landlord', text: 'Landlord' },
-      { value: 'tenant', text: 'Tenant' },
-    ]
+    userType: 1
   }),
 
   methods: {
@@ -160,14 +156,15 @@ export default {
       this.sliding = false;
     },
     Login(){
+      console.log(this.userType)
       if(!this.email && !this.password){
         this.errorValue = "Input your Email and Password!"
         this.dismissCountDown = this.dismissSecs
-      }else if(this.email == 'landlord@email.com' && this.password == 'landlord' && this.userSelected == 'landlord') {
+      }else if(this.email == 'landlord@email.com' && this.password == 'landlord' && this.userType == 0) {
         this.$store.state.admin = 'landlord';
         this.$store.state.authenticated = true;
         this.$router.push({ name: 'dashabord' })
-      } else if (this.email == 'tenant@email.com' && this.password == 'tenant' && this.userSelected == 'tenant') {
+      } else if (this.email == 'tenant@email.com' && this.password == 'tenant' && this.userType == 1) {
         this.$store.state.admin = 'tenant';
         this.$store.state.authenticated = true;
         this.$router.push({ name: 'dashabord' })

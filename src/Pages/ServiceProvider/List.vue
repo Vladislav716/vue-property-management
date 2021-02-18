@@ -143,112 +143,6 @@
         <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button>
       </b-row>
     </b-modal>
-    <!-- provider edit modal -->
-      <b-modal size="lg" ref="editModal" id="editModal" hide-footer title="Edit Request" >
-        <div v-if="selectedRow.name" class="p-3">
-          <b-row>
-            <b-col md="4" class="text-right">
-              <p>First Name :</p>
-            </b-col>
-            <b-col md="8">
-              <b-form-input v-model="selectedRow.name.first"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              <p>Last Name :</p>
-            </b-col>
-            <b-col md="8">
-              <b-form-input v-model="selectedRow.name.last"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Avatar :
-            </b-col>
-            <b-col md="8">
-              <b-button @click="$refs.imageInput.click()" class="btn-right mr-3">Select an image</b-button>
-              <b-img v-if="imageUrl" :src="imageUrl" class="w-100p"></b-img>
-              <input style="display: none" ref="imageInput" type="file" @change="imageSelected" enctype="multipart/form-data">
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Phone :
-            </b-col>
-            <b-col md="8">
-              <b-form-input  v-model="selectedRow.phone"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Email :
-            </b-col>
-            <b-col md="8">
-              <b-form-input  v-model="selectedRow.email"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Company Name :
-            </b-col>
-            <b-col md="8">
-              <b-form-input  v-model="selectedRow.company"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Company Website :
-            </b-col>
-            <b-col md="8">
-              <b-form-input  v-model="selectedRow.companySite"></b-form-input>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Description :
-            </b-col>
-            <b-col md="8">
-              <b-form-textarea  v-model="selectedRow.description"></b-form-textarea>
-            </b-col>
-          </b-row>
-          <b-row class="mt-3">
-            <b-col md="4" class="text-right">
-              Task Lists :
-            </b-col>
-            <b-col md="8">
-              <b-form-input placeholder="Task Name" class="mb-2 w-70" v-model="taskContent.taskName"></b-form-input>
-              <b-textarea placeholder="Task Description" class="w-70 mb-2" v-model="taskContent.description"></b-textarea>
-              <b-form-radio-group
-                v-model="taskContent.status"
-                :options="taskStatusOption"
-                class="mb-2 w-70"
-                value-field="item"
-                text-field="name"
-                disabled-field="notEnabled"
-              ></b-form-radio-group>
-              <b-button variant="danger" @click="AddTask" class="mb-2"><i class="pe-7s-plus"></i> Add</b-button>
-              <VuePerfectScrollbar class="app-sidebar-scroll h-180p w-70" v-once>
-                <b-table bordered class="mb-0" striped hover :items="selectedRow.task" :fields="taskFields">
-                  <template #cell(status)="row">
-                    <div v-if="row.value == 0" class="badge badge-info ml-2">new</div>
-                    <div v-if="row.value == 1" class="badge badge-success ml-2">completed</div>
-                    <div v-if="row.value == 2" class="badge badge-danger ml-2">rejected</div>
-                  </template>
-                  <template #cell(index)="row">
-                    <button class="border-0 btn-transition btn btn-outline-danger" @click="delTask(row)">
-                      <i class="pe-7s-trash"></i>
-                    </button>
-                  </template>
-                </b-table>
-              </VuePerfectScrollbar>
-            </b-col>
-          </b-row>
-          <b-row class="pull-right p-4">
-            <b-button class="w-100p" variant="success" @click="hideEdit">Ok</b-button>
-          </b-row>
-        </div>
-    </b-modal>
   </div>
 </template>
 
@@ -579,9 +473,12 @@ export default {
       },
       edit(row){
         this.selectedRow = row.item
-        console.log(this.selectedRow)
-        this.imageUrl = this.getImgUrl(this.selectedRow.name.avatar)
-        this.$root.$emit('bv::show::modal', 'editModal', '#btnShow')
+        this.selectedRow.imageUrl = this.getImgUrl(this.selectedRow.name.avatar)
+        this.$router.push({
+          name: 'serviceAdd',
+          params: {item: this.selectedRow}, 
+        })
+        // this.$root.$emit('bv::show::modal', 'editModal', '#btnShow')
       },
        imageSelected(e) {
         e.preventDefault()

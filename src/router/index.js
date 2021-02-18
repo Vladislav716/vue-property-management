@@ -38,16 +38,16 @@ export default new Router({
         {
             path: '/tenant-add',
             name: 'tenanatsAdd',
-            component: () => import('../Pages/Tenants/repair.vue'),
+            component: () => import('../Pages/Tenants/Add.vue'),
         },
         {
             path: '/properties-list',
-            name: 'properties list',
+            name: 'propertiesList',
             component: () => import('../Pages/Properties/List.vue'),
         },
         {
             path: '/properties-add',
-            name: 'properties add',
+            name: 'propertiesAdd',
             component: () => import('../Pages/Properties/Add.vue'),
         },
         {
@@ -57,11 +57,11 @@ export default new Router({
         },
         {
             path: '/service-provider-add',
-            name: 'service add',
+            name: 'serviceAdd',
             component: () => import('../Pages/ServiceProvider/Add.vue'),
         },
         {
-            path: '/applicant-drag-drop',
+            path: '/applicant-list',
             name: 'applicant list',
             component: () => import('../Pages/ApplicantFunnel/List.vue'),
         },

@@ -117,7 +117,7 @@
           </b-col>
         </b-row>
         <div class="pull-right">
-          <b-button variant="success"  @click="AddProvider"><i class="pe-7s-plus"></i> Add Provider</b-button>
+          <b-button variant="success"  @click="AddEmployee"><i class="pe-7s-plus"></i>{{$route.params.item ? ' Edit Employee' : ' Add Employee'}} </b-button>
         </div>
 
       </div>
@@ -162,12 +162,11 @@ export default {
         },
         taskContent: {},
         imageUrl: null,
-         taskStatusOption: [
+        taskStatusOption: [
           { item: 0, name: 'New' },
           { item: 1, name: 'Complete' },
           { item: 2, name: 'Reject' },
         ],
-        render: true,
         taskFields: [
           {
             key: "taskName",
@@ -197,8 +196,11 @@ export default {
         ],
     }),
 
-    computed: {
-       
+     created() {
+      if(this.$route.params.item){
+        this.item = this.$route.params.item
+        this.imageUrl = this.$route.params.item.imageUrl
+      }
     },
     methods: {
       getImgUrl(pet) {
@@ -217,10 +219,9 @@ export default {
         this.taskContent = {}
       },
       delTask(row){
-        console.log(this.item.task, 'past')
         this.item.task = this.item.task.filter((val, ind) => ind !== row.index)
       } ,
-      AddProvider() {
+      AddEmployee() {
         console.log(this.item)
       }
     }

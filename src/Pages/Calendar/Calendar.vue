@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-title :heading="heading" :subheading="subheading" :icon="icon"></page-title>
-    <b-card class="main-card mb-3">
+    <b-card class="main-card mt-0 ">
       <FullCalendar class="demo-app-calendar" ref="fullCalendar" defaultView="dayGridMonth"
         :header="{
         left: 'prev,next today',

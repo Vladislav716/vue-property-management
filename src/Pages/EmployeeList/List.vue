@@ -554,9 +554,7 @@ export default {
       
     }),
 
-    computed: {
-       
-    },
+    
     methods: {
       onSelectRow(items){
         this.selectedRow = items;
@@ -571,9 +569,12 @@ export default {
       },
       edit(row) {
         this.selectedRow = row.item
-        console.log(this.selectedRow)
-        this.imageUrl = this.getImgUrl(this.selectedRow.name.avatar)
-        this.$root.$emit('bv::show::modal', 'editModal', '#btnShow')
+        this.selectedRow.imageUrl = this.getImgUrl(this.selectedRow.name.avatar)
+        this.$router.push({
+          name: 'serviceAdd',
+          params: {item: this.selectedRow}, 
+        })
+        // this.$root.$emit('bv::show::modal', 'editModal', '#btnShow')
       },
       del(row) {
         this.items = this.items.filter((val, index) => index !== row.index)

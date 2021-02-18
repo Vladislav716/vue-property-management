@@ -5,7 +5,6 @@
         <FooterDots />
       </div>
       <div class="app-footer-right">
-        <!-- <FooterMenu /> -->
       </div>
     </div>
   </div>
@@ -13,7 +12,6 @@
 
 <script>
 import FooterDots from "./Footer/FooterDots";
-// import FooterMenu from "./Footer/FooterMenu";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +21,6 @@ export default {
   name: "Footer",
   components: {
     FooterDots,
-    // FooterMenu
   }
 };
 </script>

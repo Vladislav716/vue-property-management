@@ -1,5 +1,5 @@
 <template>
-  <div class="app-page-title">
+  <div class="app-page-title pb-3 pt-3 mb-3">
     <div class="page-title-wrapper">
       <div class="page-title-heading">
         <div class="page-title-icon">
