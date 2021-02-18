@@ -5,6 +5,7 @@
         :subheading="subheading"
         :icon="icon"
     ></page-title>
+   
     <div class="row card p-3">
       <div class="flex justify-space-between">
         <div class="my-1 w-100p">
@@ -22,7 +23,7 @@
               value-field="item"
               text-field="name"
               disabled-field="notEnabled"
-              @change="StatusChange"
+              @change="statusFilter"
             ></b-form-radio-group>
           </div>
         </div>
@@ -53,10 +54,12 @@
          {{row.value.no}}
         </template>
         <template #cell(status)="row">
-          <span v-if="row.value === 0" class="badge badge-info ml-2">new</span>
-          <span v-if="row.value === 1" class="badge badge-warning ml-2">ongoing</span>
-          <span v-if="row.value === 2" class="badge badge-success ml-2">accept</span>
-          <span v-if="row.value === 3" class="badge badge-danger ml-2">reject</span>
+          <b-dropdown size="sm" :text="row.value === 0 ? 'New' : (row.value === 1 ? 'Ongoing': (row.value === 2 ? 'Accepted' : 'Rejected'))" :variant="row.value === 0 ? 'info' : (row.value === 1 ? 'warning': (row.value === 2 ? 'success' : 'danger'))" >
+            <b-dropdown-item @click="changeStatus(row.index, 'new')">new</b-dropdown-item>
+            <b-dropdown-item @click="changeStatus(row.index, 'ongoing')">ongoing</b-dropdown-item>
+            <b-dropdown-item @click="changeStatus(row.index, 'accepted')">accepted</b-dropdown-item>
+            <b-dropdown-item @click="changeStatus(row.index, 'rejected')">rejected</b-dropdown-item>
+          </b-dropdown>
         </template>
          <template #cell(action)="row">
           <b-button variant="outline-danger" class="btn-sm" @click="del(row.index)">
@@ -70,78 +73,46 @@
         </b-col>
       </b-row>
     </div>
-    <b-modal size="lg" ref="viewModal" id="viewModal" hide-footer>
-      <div v-if="selectedRow[0]" class="p-3">
-        <div class="m-auto text-center">
-          <b-img  class="rounded-pill w-100p" :src="getImgUrl(selectedRow[0].name.avatar, 'avatar')" alt=""></b-img>
-          <h4 class="text-center mt-2">{{selectedRow[0].name.first}} {{selectedRow[0].name.last}}</h4> 
-          <h5 class="text-center mb-3">{{selectedRow[0].email}}</h5> 
-        </div>
-        <b-row class="p-3 mb-1">
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">First Name</h6>
-            {{selectedRow[0].name.first}}
-          </b-col>
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">Last Name</h6>
-            {{selectedRow[0].name.last}}
-          </b-col>
-        </b-row>
-        <b-row class="p-3 mb-1">
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">Phone</h6>
-            {{selectedRow[0].phone}}
-          </b-col>
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">Email</h6>
-            {{selectedRow[0].email}}
-          </b-col>
-        </b-row>
-        <b-row class="p-3 mb-1">
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">Current Property</h6>
-            {{selectedRow[0].currentProperty}}
-          </b-col>
-          <b-col md="6">
-            <h6 class="font-weight-bold mb-0">Current Addresss</h6>
-            {{selectedRow[0].currentAddress}}
-          </b-col>
-        </b-row>
-        <b-row class="p-3">
-          <b-col md="12">
-            <h6 class="font-weight-bold">Driver's Lecense No:  {{selectedRow[0].license.no}}</h6>
-            <div class="w-150p">
-              <expandable-image
-                :src="getImgUrl(selectedRow[0].license.image, 'license')"
-              />
-            </div>
-          </b-col>
-        </b-row>
-      </div>
-      
-      <b-row class="pull-right p-4">
-        <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button>
-      </b-row>
-    </b-modal>
+     <!-- <div class="row card p-3">
+      <drag-drop
+      :dropzones="dropGroups"
+      :dropzonesTitle="'XYZ Company Teams'"
+    :originalData="stories"
+      :originalTitle="'Tasks to be distributed'"
+      :inPlace="true"
+      :enableSave="true"
+      :enableCancel="true"
+      @dropInOriginalBucket="originalBucketDropEvent"
+      @dropInDestinationBucket="destinationBucketDropEvent"
+    >
+      <template #dd-card="{ cardData }">
+        <custom-card
+          :data="cardData"
+          @done="doneMarked"
+        />
+      </template>
+      </drag-drop>
+
+    </div> -->
   </div>
 </template>
 
 <script>
-import { library } from "@fortawesome/fontawesome-svg-core";
-// import VueCircle from "vue2-circle-progress";
+import { library } from "@fortawesome/fontawesome-svg-core"
 
-import PageTitle from "@/Layout/Components/PageTitle.vue";
+import PageTitle from "@/Layout/Components/PageTitle.vue"
 import {
   faCog,
   faBusinessTime,
   faSearch,
   faStar
-} from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// import VuePerfectScrollbar from "vue-perfect-scrollbar";
+} from "@fortawesome/free-solid-svg-icons"
+// import DragDrop from 'vue-drag-n-drop'
+// import CustomCard from './CustomCard'
 
 
-library.add(faCog, faBusinessTime, faSearch, faStar);
+
+library.add(faCog, faBusinessTime, faSearch, faStar)
 
 const items = [
   { 
@@ -189,16 +160,15 @@ const items = [
     status: 3
   },
   
-];
+]
 
 
 
 export default {
     components: {
       PageTitle,
-      // VueCircle,
-      // "font-awesome-icon": FontAwesomeIcon,
-      // VuePerfectScrollbar
+      // DragDrop,
+      // CustomCard
     },
     data: () => ({
         heading: "Applicant Funnel",
@@ -239,6 +209,47 @@ export default {
           { item: 'accept', name: 'Accept' },
           { item: 'reject', name: 'Reject' },
         ],
+        stories: [
+        {
+          title: 'Strategy 101',
+          description: 'Create a draft of business plan',
+          time: '3 days',
+          done: false
+        },
+        {
+          title: 'Strategy 102',
+          description: 'Finalize the plan',
+          time: '4 days',
+          done: false
+        },
+        {
+          title: 'Tech diagram',
+          description: 'Draw the tech data',
+          time: '4 days',
+          done: false
+        },
+        {
+          title: 'Place Holder',
+          description: 'Data Science Team',
+          time: '5 days',
+          done: false
+        }
+      ],
+
+      dropGroups: [
+        {
+          name: 'Business Team',
+          children: []
+        },
+        {
+          name: 'Tech Dept',
+          children: []
+        },
+        {
+          name: 'Marketing Dept',
+          children: []
+        }
+      ]
     }),
 
     computed: {
@@ -246,53 +257,78 @@ export default {
     },
     methods: {
       onSelectRow(items){
-        this.selectedRow = items;
+        this.selectedRow = items
         this.$root.$emit('bv::show::modal', 'viewModal', '#btnShow')
       },
       getImgUrl(pet, type) {
-        var images;
+        var images
         if(type === 'avatar') {
           images = require.context('@/assets/images/avatars/', false, /\.jpg$/)
-          return images('./' + pet + ".jpg");
+          return images('./' + pet + ".jpg")
         } else if(type === 'license') {
           images = require.context('@/assets/images/dropdown-header/', false, /\.jpg$/)
           return images('./' + pet + ".jpg")
         }
       },
-      hideModal() {
-      this.$refs['viewModal'].hide()
-      },
       del(i) {
         this.items = this.items.filter((val, index) => index !== i)
 
       },
-      filterType(value){
-        let   patt = new RegExp(value);
-        this.items = items.filter((val) => patt.test(val.type) == true );
-      },
-      StatusChange(value){
+      statusFilter(value){
         switch (value) {
           case 'all':
-            this.items = items;
-            break;
+            this.items = items
+            break
           case 'new':
-            this.items = items.filter(val => val.status === 0);
+            this.items = items.filter(val => val.status === 0)
+            break
+          case 'ongoing':
+            this.items = items.filter(val => val.status === 1)
+            break
+          case 'accept':
+            this.items = items.filter(val => val.status === 2)
+            break
+          case 'reject':
+            this.items = items.filter(val => val.status === 3)
+            break
+          default:
+            break
+        }
+      },
+      doneMarked() {
+
+      },
+      changeStatus(index, value) {
+        console.log(index, value)
+        let status;
+        switch (value) {
+          case 'new':
+            status = 0;
             break;
           case 'ongoing':
-            this.items = items.filter(val => val.status === 1);
+            status = 1;
             break;
-          case 'accept':
-            this.items = items.filter(val => val.status === 2);
+          case 'accepted':
+            status = 2;
             break;
-          case 'reject':
-            this.items = items.filter(val => val.status === 3);
+          case 'rejected':
+            status = 3;
             break;
+        
           default:
             break;
         }
+        this.items[index].status = status
+      },
+      originalBucketDropEvent(e){
+        console.log(e)
+      },
+      destinationBucketDropEvent(e) {
+        console.log(e)
       }
+      
     } 
-};
+}
 </script>
 
 <style scoped>

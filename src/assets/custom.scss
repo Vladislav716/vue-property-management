@@ -28,3 +28,19 @@
     display: none !important;
   }
 }
+
+.card {
+  width: 100% !important;
+}
+
+.fc-dayGrid-view .fc-body .fc-row {
+  height: 70px !important;
+}
+
+.fc-scroller.fc-day-grid-container {
+  height: inherit !important;
+}
+
+.fc-scroller.fc-time-grid-container {
+  height: 400px !important;
+}

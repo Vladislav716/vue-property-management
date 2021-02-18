@@ -49,6 +49,7 @@ export default {
         {
           title: 'Service Requests',
           icon: 'pe-7s-notebook',
+          href: '/service-request-list',
           child: [
             {
               href: "/service-request-list",
@@ -61,8 +62,9 @@ export default {
           ]
         },
         {
-          title: 'Tenants list',
+          title: 'Tenants',
           icon: 'pe-7s-note2',
+          href: "/tenant-list",
           child: [
             {
               href: "/tenant-list",
@@ -75,8 +77,9 @@ export default {
           ]
         },
         {
-            title: 'properties list',
+            title: 'Properties',
             icon: 'pe-7s-culture',
+            href: "/properties-list",
              child: [
             {
               href: "/properties-list",
@@ -89,8 +92,9 @@ export default {
           ]
         },
         {
-            title: 'Service Provider List',
+            title: 'Service Provider',
             icon: 'pe-7s-coffee',
+            href: "/service-provider-list",
             child: [
               {
                 href: "/service-provider-list",
@@ -103,8 +107,9 @@ export default {
             ]
         },
         {
-            title: 'Applicant Funnel List',
+            title: 'Applicant Funnel',
             icon: 'pe-7s-news-paper',
+            href: "/applicant-drag-drop",
             child: [
               {
                 href: "/applicant-drag-drop",
@@ -117,8 +122,9 @@ export default {
             ]
         },
         {
-            title: 'Employees List',
+            title: 'Employees',
             icon: 'pe-7s-id',
+            href: "/employee-list",
             child: [
               {
                 href: "/employee-list",

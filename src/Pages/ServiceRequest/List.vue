@@ -1,6 +1,9 @@
 <template>
   <div>
     <page-title :heading="heading" :subheading="subheading" :icon="icon"></page-title>
+    <div class="pull-right mb-2">
+      <b-button variant="success" v-b-modal.addModal><i class="pe-7s-plus"></i>Add Request</b-button>
+    </div>
     <b-card class="main-card mb-4">
       <b-row>
         <b-col md="10" class="my-1">
@@ -8,7 +11,7 @@
             <legend tabindex="-1" class="bv-no-focus-ring col-form-label pt-0">Filter</legend>
             <b-form-radio-group
               v-model="assigned"
-              :options="options"
+              :options="filterOptions"
               class="mb-3"
               value-field="item"
               text-field="name"
@@ -44,7 +47,7 @@
       >
 
         <template #cell(assigned)="row">
-          <span :class="row.value ? 'assigned': 'unassigned'">{{row.value ? 'Assigned': 'Unassigned'}}</span>
+          <span :class="row.value">{{row.value}}</span>
         </template>
         <template #cell(property)="row">{{ row.value }}</template>
         <template #cell(createdBy)="row">
@@ -76,20 +79,14 @@
         </b-col>
       </b-row>
     </b-card>
-     <b-modal size="lg" ref="editModal" id="editModal" hide-footer title="Edit Request" v-if="selectedRow[0]">
+    <!-- Edit Modal -->
+    <b-modal size="lg" ref="editModal" id="editModal" hide-footer title="Edit Request" v-if="selectedRow[0]">
       <b-row>
         <b-col md="4" class="text-right">
           <p>Service Provider/Employee :</p>
         </b-col>
         <b-col md="4">
-          <b-form-radio-group
-              v-model="selectedRow[0].assigned"
-              :options="addOptions"
-              class="mb-3"
-              value-field="item"
-              text-field="name"
-              disabled-field="notEnabled"
-            ></b-form-radio-group>
+          <b-form-select v-model="selectedRow[0].assigned" :options="assignedOptions"></b-form-select>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -97,7 +94,7 @@
           Property :
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="selectedRow[0].property" placeholder="Enter the property"></b-form-input>
+          <b-form-select v-model="selectedRow[0].property" :options="propertyOptions"></b-form-select>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -156,6 +153,80 @@
         <b-button class="w-100p" variant="success"  @click="EditRequest">Ok</b-button>
       </b-row>
     </b-modal>
+    <!-- Add Modal -->
+    <b-modal size="lg" ref="addModal" id="addModal" hide-footer title="Add Request">
+      <b-row>
+        <b-col md="4" class="text-right">
+          <p>Service Provider/Employee :</p>
+        </b-col>
+        <b-col md="4">
+          <b-form-select v-model="request.assigned" :options="assignedOptions"></b-form-select>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Property :
+        </b-col>
+        <b-col md="8">
+          <b-form-select v-model="request.property" :options="propertyOptions"></b-form-select>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Request Created By :
+        </b-col>
+        <b-col md="8">
+          <b-button @click="$refs.licenseInput.click()" class="btn-right mr-3">Select an image</b-button>
+          <b-img v-if="imageUrl" :src="imageUrl" class="w-100p"></b-img>
+          <input style="display: none" ref="licenseInput" type="file" @change="imageSelected" enctype="multipart/form-data">
+          <b-form-input list="my-list-id" v-model="request.createdBy.name"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Cost :
+        </b-col>
+        <b-col md="8">
+          <b-form-input type="number" v-model="request.cost"></b-form-input>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="4" class="text-right">
+          Schedule :
+        </b-col>
+        <b-col md="8">
+          <label>Date</label>
+          <b-input-group class="mb-3">
+            <b-form-input
+              id="example-input"
+              v-model="request.schedule.date"
+              type="text"
+              placeholder="YYYY-MM-DD"
+              autocomplete="off"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-form-datepicker
+                v-model="request.schedule.date"
+                button-only
+                right
+                locale="en-US"
+                aria-controls="example-input"
+              ></b-form-datepicker>
+            </b-input-group-append>
+          </b-input-group>
+          <label>Subject</label>
+          <b-form-input v-model="request.schedule.subject"></b-form-input>
+          <label>notes</label>
+          <b-form-textarea
+            v-model="request.schedule.notes"
+          ></b-form-textarea>
+        </b-col>
+      </b-row>
+      <b-row class="pull-right p-4">
+        <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
+        <b-button class="w-100p" variant="success"  @click="AddRequest">Ok</b-button>
+      </b-row>
+    </b-modal>
   </div>
 </template>
 
@@ -163,15 +234,15 @@
 import PageTitle from "@/Layout/Components/PageTitle.vue";
 
 const items = [
-  { index: 0, assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { index: 1,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { index: 2,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { index: 3,  assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { index: 4,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { index: 5,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { index: 6,  assigned: true, property: 'Property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
-  { index: 7,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
-  { index: 8,  assigned: false, property: 'Property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 0, assigned: 'assigned', property: 'property1', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 1,  assigned: 'unassigned', property: 'property2', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 2,  assigned: 'unassigned', property: 'property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 3,  assigned: 'assigned', property: 'property4', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 4,  assigned: 'unassigned', property: 'property3', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 5,  assigned: 'unassigned', property: 'property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 6,  assigned: 'assigned', property: 'property2', createdBy: {avatar: '2', name: 'Jhone'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request and it is the best service, I think there are more properties', subject: 'property1'}  },
+  { index: 7,  assigned: 'unassigned', property: 'property1', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
+  { index: 8,  assigned: 'unassigned', property: 'property3', createdBy: {avatar: '1', name: 'Shoe'}, cost: '35600', schedule: {date: '2021-01-04', notes: 'First Request', subject: 'property1'}  },
 ];
 
 export default {
@@ -204,7 +275,7 @@ export default {
     perPage: 5,
     totalRows: items.length,
     pageOptions: [5, 10, 15],
-    options: [
+    filterOptions: [
       { item: 'all', name: 'All' },
       { item: 'assigned', name: 'Assigned' },
       { item: 'unassigned', name: 'Unassigned' },
@@ -214,10 +285,15 @@ export default {
     sortDirection: "asc",
     filter: null,
     assigned: 'all',
-    addAssigned: true,
-    addOptions: [
-      { item: true, name: 'Assigned' },
-      { item: false, name: 'Unassigned' },
+    assignedOptions: [
+      { value: 'assigned', text: 'Assigned' },
+      { value: 'unassigned', text: 'Unassigned' },
+    ],
+    propertyOptions: [
+      { value: 'property1', text: 'Property1' },
+      { value: 'property2', text: 'Property2' },
+      { value: 'property3', text: 'Property3' },
+      { value: 'property4', text: 'Property4' },
     ],
     property: '',
     cost: '',
@@ -225,6 +301,11 @@ export default {
     notes: '',
     subject: '',
     imageUrl: null,
+    request: {
+      createdBy: {},
+      schedule: {},
+      assigned: 'assigned'
+    }
   }),
 
 
@@ -241,13 +322,13 @@ export default {
     AssignedChange(value){
       switch (value) {
         case 'all':
-          this.items = items.filter(val => val.assigned == true || val.assigned == false)
+          this.items = items.filter(val => val.assigned == 'assigned' || val.assigned == 'unassigned')
           break;
         case 'assigned':
-          this.items = items.filter(val => val.assigned == true)
+          this.items = items.filter(val => val.assigned == 'assigned')
           break;
         default:
-          this.items = items.filter(val => val.assigned == false)
+          this.items = items.filter(val => val.assigned == 'unassigned')
           break;
       }
     },
@@ -277,6 +358,12 @@ export default {
       // this.image = file
       this.imageUrl = URL.createObjectURL(file)
     },
+    AddRequest() {
+      console.log(this.request)
+      // this.request.createdBy.avatar = this.imageUrl
+      this.request.createdBy.avatar = '2'
+      this.items.push(this.request)
+    }
   }
 };
 </script>

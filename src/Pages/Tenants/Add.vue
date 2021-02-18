@@ -102,7 +102,7 @@
         </b-col>
       </b-row>
       <b-row class="pull-right mr-5 mb-3">
-        <b-button variant="success" @click="addTenant" class="btn-lg"><i class="pe-7s-plus"></i> Add Tenant</b-button>
+        <b-button variant="success" @click="addTenant" class="btn-lg"><i class="pe-7s-plus"></i>{{item ? ' Edit Tenant' : ' Add Tenant'}}</b-button>
       </b-row>
     </div>
 
@@ -145,11 +145,14 @@ export default {
         profile: {
           name: {},
           license: {}
-        }
+        },
+        item: {}
     }),
-
+    created() {
+      this.item = this.$route.params.item;
+      console.log(this.item)
+    },
     methods: {
-    
       getImgUrl(pet, type) {
         var images;
         if(type === 'avatar') {
@@ -181,6 +184,9 @@ export default {
 
       
     },
+    mounted() {
+      console.log(this.item)
+    }
 };
 </script>
 

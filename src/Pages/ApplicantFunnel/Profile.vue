@@ -22,7 +22,7 @@
               value-field="item"
               text-field="name"
               disabled-field="notEnabled"
-              @change="StatusChange"
+              @change="statusFilter"
             ></b-form-radio-group>
           </div>
         </div>
@@ -58,11 +58,11 @@
           <span v-if="row.value === 2" class="badge badge-success ml-2">accept</span>
           <span v-if="row.value === 3" class="badge badge-danger ml-2">reject</span>
         </template>
-         <template #cell(action)="row">
+         <!-- <template #cell(action)="row">
           <b-button variant="outline-danger" class="btn-sm" @click="del(row.index)">
             <i class="pe-7s-trash"></i>
           </b-button>
-        </template>
+        </template> -->
       </b-table>
        <b-row>
         <b-col md="6" class="my-1">
@@ -220,7 +220,7 @@ export default {
           { key: "currentProperty", label: "Current Property", sortable: true, class: "align-middle text-center" },
           { key: "currentAddress", label: "Current Address", sortable: true, class: "align-middle text-center" },
           { key: "status", label: "Status", sortable: true, class: "align-middle" },
-          { key: "action", label: "Action", class: "align-middle" },
+          // { key: "action", label: "Action", class: "align-middle" },
         ],
         totalRows: items.length,
         pageOptions: [5, 10, 15],
@@ -240,10 +240,6 @@ export default {
           { item: 'reject', name: 'Reject' },
         ],
     }),
-
-    computed: {
-       
-    },
     methods: {
       onSelectRow(items){
         this.selectedRow = items;
@@ -264,13 +260,8 @@ export default {
       },
       del(i) {
         this.items = this.items.filter((val, index) => index !== i)
-
       },
-      filterType(value){
-        let   patt = new RegExp(value);
-        this.items = items.filter((val) => patt.test(val.type) == true );
-      },
-      StatusChange(value){
+      statusFilter(value){
         switch (value) {
           case 'all':
             this.items = items;

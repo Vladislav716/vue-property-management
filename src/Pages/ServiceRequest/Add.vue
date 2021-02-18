@@ -7,14 +7,7 @@
           <p>Service Provider/Employee :</p>
         </b-col>
         <b-col md="4">
-          <b-form-radio-group
-              v-model="assigned"
-              :options="options"
-              class="mb-3"
-              value-field="item"
-              text-field="name"
-              disabled-field="notEnabled"
-            ></b-form-radio-group>
+          <b-form-select v-model="assigned" :options="assignedOptions"></b-form-select>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -22,7 +15,7 @@
           Property :
         </b-col>
         <b-col md="8">
-          <b-form-input v-model="property" placeholder="Enter the property"></b-form-input>
+          <b-form-select v-model="property" :options="propertyOptions"></b-form-select>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -78,7 +71,7 @@
       </b-row>
       <b-row class="pull-right p-4">
         <!-- <b-button class="mr-4 w-100p" variant="danger"  @click="hideModal">Cancel</b-button> -->
-        <b-button class="w-100p" variant="success"  @click="AddProperty">Add Property</b-button>
+        <b-button class="w-100p" variant="success"  @click="AddRequest">Add Request</b-button>
       </b-row>
     </b-card>
   </div>
@@ -100,9 +93,15 @@ export default {
     icon: "pe-7s-notebook icon-gradient bg-mixed-hopes",
   
     assigned: true,
-    options: [
-      { item: true, name: 'Assigned' },
-      { item: false, name: 'Unassigned' },
+    assignedOptions: [
+      { value: 'assigned', text: 'Assigned' },
+      { value: 'unassigned', text: 'Unassigned' },
+    ],
+    propertyOptions: [
+      { value: 'property1', text: 'Property1' },
+      { value: 'property2', text: 'Property2' },
+      { value: 'property3', text: 'Property3' },
+      { value: 'property4', text: 'Property4' },
     ],
     name: '',
     property: '',
@@ -130,7 +129,7 @@ export default {
     var images = require.context('@/assets/images/avatars/', false, /\.jpg$/)
     return images('./' + pet + ".jpg")
     },
-    AddProperty() {
+    AddRequest() {
       // console.log(this.assigned, this.property, this.name, this.imageUrl, this.cost, this.date, this.subject, this.notes )
       alert(`assigned: ${this.assigned}, property: ${this.property}, createdByName: ${this.name}, createdByAvatar: ${this.imageUrl}, cost: ${this.cost},
       scheduleDate: ${this.date}, scheduleSubject: ${this.subject}, scheduleNotes: ${this.notes}`)
